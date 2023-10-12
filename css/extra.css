@@ -1,0 +1,24 @@
+.md-header {
+    background: linear-gradient(90deg, #004B96 0%,hsl(132, 100%, 92%) 66%, #76b900 100%);
+    /* color: black; */
+}
+
+.md-tabs {
+    background: linear-gradient(90deg, #004B96 0%,hsl(132, 100%, 92%) 66%, #76b900 100%)
+                #DDDDDD;
+    background-blend-mode: multiply;
+    transition: background-color 500ms linear;
+    color: white; 
+    font-weight: bold;
+}
+
+.md-tabs.topped {
+    background: linear-gradient(90deg, #004B96 0%,hsl(132, 100%, 92%) 66%, #76b900 100%);
+    transition: background-color 500ms linear;
+    color: black; 
+    font-weight: bold;
+}
+
+.md-nav__link--active {
+    font-weight: 900;
+}
