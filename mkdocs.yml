@@ -81,6 +81,7 @@ extra_css:
 
 nav:
   - Home: index.md
+  - Models: models.md
   - Tutorials:
     - Introduction: tutorial-intro.md
     - Hello AI World: hello_ai_world.md
