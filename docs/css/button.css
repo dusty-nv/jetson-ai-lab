@@ -1,0 +1,118 @@
+.twitch-button {
+  display: inline-block;
+  outline: 0;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+  font-size: 13px;
+  height: 30px;
+  background-color: #74b800; /*#9147ff;*/
+  color: white;
+  padding: 0 10px;         
+}
+  
+.twitch-button:hover {
+  background-color: #81BF15; /*#772ce8;*/
+}  
+
+.btn-mailchimp {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  height: 36px;
+  line-height: 34px;
+  font-size: 14px;
+  color: #241c15;
+  background-color: #efeeea;
+  transition: background-color 0.2s ease-in-out 0s, opacity 0.2s ease-in-out 0s;
+  padding: 0 10px;
+}
+
+.btn-mailchimp:hover {
+  color: #241c15;
+  background-color: #d9d7cd;
+}
+
+.btn-green {
+  color: #e4e4e4;
+  background-color: #74b800;
+}
+
+.btn-green:hover {
+  color: rgb(255,255,255);
+  background-color: #669e00;/*#81BF15;*/
+}
+
+.btn-yellow, a.btn-yellow {
+  color: rgb(235,235,235);
+  background-color: rgb(235, 143, 0);
+  transition: none;
+}
+
+.btn-yellow:hover, a.btn-yellow:hover, a.btn-yellow:active, a.btn-yellow:focus {
+  color: rgb(255,255,255);
+  background-color: rgb(249, 162, 22);
+  text-decoration-color: rgb(255,255,255);
+  text-decoration-thickness: 1px;
+  transition: none;
+}
+
+.btn-blue, a.btn-blue {
+  color: rgb(235,235,235);
+  background-color: hsl(209, 100%, 43%);
+  transition: none;
+}
+
+.btn-blue:hover, a.btn-blue:hover, a.btn-blue:active, a.btn-blue:focus {
+  color: rgb(255,255,255);
+  background-color: rgb(0, 129, 251);
+  text-decoration-color: rgb(255,255,255);
+  text-decoration-thickness: 1px;
+  transition: none;
+}
+
+.btn-med {
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 15px;
+  margin: 2px;
+}
+
+.btn-med:hover {
+  text-decoration: underline;
+}
+
+.btn-med:link {
+  text-decoration: none;
+}
+
+.btn-sm {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 5px;
+  margin: 3px;
+}
+  
+.pin-green {
+  color: #dddddd;
+  background-color: #74b800;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 5px;
+  margin: 3px;
+}
+
+.pin-yellow {
+  color: rgb(255,255,255);
+  background-color: rgb(235, 143, 0);
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 5px;
+  margin: 3px;
+}
