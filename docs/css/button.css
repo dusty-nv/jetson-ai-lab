@@ -1,3 +1,4 @@
+/* https://markodenic.com/tools/buttons-generator/ */
 .twitch-button {
   display: inline-block;
   outline: 0;
@@ -75,19 +76,19 @@
   transition: none;
 }
 
-.btn-med {
+.btn-md {
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
-  padding: 8px 15px;
+  padding: 6px 15px;
   margin: 2px;
 }
 
-.btn-med:hover {
+.btn-md:hover {
   text-decoration: underline;
 }
 
-.btn-med:link {
+.btn-md:link {
   text-decoration: none;
 }
 
@@ -115,4 +116,62 @@
   font-weight: 500;
   padding: 5px 5px;
   margin: 3px;
+}
+
+/* 
+ * https://proto.io/freebies/onoff/ 
+ * https://www.lambdatest.com/blog/css-toggle-switches/
+ * https://codepen.io/coldsoul/pen/pbdvPa
+ * https://codepen.io/magnificode/pen/ojYJJP
+ * https://www.w3schools.com/howto/howto_css_switch.asp
+ */
+ .toggle-btn {
+  border: 2px solid #aaaaaa;
+  display: inline-block;
+  padding: 5px;
+  position: relative;
+  text-align: center;
+  /*transition: background 600ms ease, color 600ms ease;*/
+}
+
+input[type="radio"].toggle {
+  display: none;
+  & + label{
+      cursor: pointer;
+      min-width: 50px;
+      &:hover{
+          background: none;
+          color: #1a1a1a;
+      }
+      &:after{
+          background: #74b800;
+          content: "";
+          height: 100%;
+          position: absolute;
+          top: 0;
+          /*transition: left 200ms cubic-bezier(0.77, 0, 0.175, 1);*/
+          width: 100%;
+          z-index: -1;
+      }
+  }
+  &.toggle-left + label {
+      border-right: 0;
+      &:after{
+          left: 100%
+      }
+  }
+  &.toggle-right + label{
+      margin-left: -5px;
+      &:after{
+          left: -100%;
+      }
+  }
+  &:checked + label {
+      cursor: default;
+      color: #fff;
+      /*transition: color 200ms;*/
+      &:after{
+          left: 0;
+      }
+  }
 }
