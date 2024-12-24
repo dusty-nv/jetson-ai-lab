@@ -4,6 +4,7 @@
 class ModalDialog {
   
   constructor(id, title, body) {
+    this.id = id;
     let html = `
       <div class="modal" id="${id}" >
         <div class="modal-content">
@@ -16,17 +17,8 @@ class ModalDialog {
         </div>
       </div>`;
 
-      /*
-       *             <a href="https://huggingface.co/meta-llama/Llama-3.2-1B" class="btn-blue btn-med" target="_blank">Meta</a>
-            <a href="https://huggingface.co/meta-llama/Llama-3.2-1B" class="btn-yellow btn-med" target="_blank">Hugging Face</a>
-            <div>Llama 3 - 8GB</div>
-            <div>Llama 4 - 18GB</div>
-      */
-      /*<div class="modal-footer">
-          Footer
-      </div>*/
+    /*<div class="modal-footer">Footer</div>*/
 
-    this.id = id;
     this.node = htmlToNode(html.trim()); //document.getElementById(id);
     this.body = this.node.getElementsByClassName("modal-body")[0];
 
@@ -34,7 +26,7 @@ class ModalDialog {
       this.body.appendChild(htmlToNode(body.trim()));
     }
 
-    document.getElementById('model_registry').insertAdjacentElement("afterend", this.node);
+    document.getElementById('registry_browser').insertAdjacentElement("afterend", this.node);
     //document.body.appendChild(this.node); //prepend(this.node);
     
     const close_btn = this.node.getElementsByClassName("modal-close")[0];
@@ -59,7 +51,7 @@ class ModalDialog {
   }
 
   remove() {
-    console.log(`[CLOSE] ${this.id}`);
+    console.log(`Closing dialog ${this.id}`);
     this.hide();
 
     window.setTimeout(() => {

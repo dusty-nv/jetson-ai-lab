@@ -1,0 +1,121 @@
+{
+  "models": {
+    "name": "Models",
+    "tags": []
+  },
+  "llm": {
+    "name": "Language Models (LLM / SLM)",
+    "tags": ["models"]
+  },
+  "vlm": {
+    "name": "Vision / Language Models",
+    "tags": ["models"]
+  },
+  "field": {
+    "name": "field",
+    "tags": []
+  },
+  "bool": {
+    "name": "bool",
+    "tags": ["field"]
+  },
+  "number": {
+    "name": "number",
+    "tags": ["field"]
+  },
+  "select": {
+    "name": "select",
+    "tags": ["field"]
+  },
+  "string": {
+    "name": "string",
+    "tags": ["field"]
+  },
+  "url": {
+    "name": "URL",
+    "tags": ["string"]
+  },
+  "api": {
+    "name": "API",
+    "tags": ["select"]
+  },
+  "mlc": {
+    "name": "MLC",
+    "tags": ["api"]
+  },
+  "quantization": {
+    "name": "Quantization",
+    "tags": ["select"]
+  },
+  "q4f16_ft": {
+    "name": "q4f16_ft",
+    "tags": ["quantization"]
+  },
+  "q4f16_1": {
+    "name": "q4f16_1",
+    "tags": ["quantization"]
+  },
+  "jetson": {
+    "name": "Jetson",
+    "tags": []
+  },
+  "orin-nano": {
+    "name": "Orin Nano",
+    "tags": ["jetson"],
+    "pin": true
+  },
+  "orin-nx": {
+    "name": "Orin NX",
+    "tags": ["jetson"],
+    "pin": true
+  },
+  "agx-orin": {
+    "name": "AGX Orin",
+    "tags": ["jetson"],
+    "pin": true
+  },
+  "llama": {
+    "name": "Meta Llama",
+    "tags": ["llm"]
+  },
+  "llama-3.2-8b": {
+    "name": "Llama-3.2-8B",
+    "tags": ["llama", "agx-orin", "orin-nx", "orin-nano"],
+    "links": {
+      "meta": {
+        "name": "Meta",
+        "url": "https://huggingface.co/gemma/gemma-2-2b-it",
+        "color": "blue"
+      },
+      "hf": {
+        "name": "Hugging Face",
+        "url": "https://huggingface.co/gemma/gemma-2-2b-it",
+        "color": "yellow"
+      }
+    }
+  },
+  "llama-3.2-8b-q4f16_ft-mlc": {
+    "name": "Llama-3.2-8B-q4f16_ft-MLC",
+    "url": "https://huggingface.co/mlc-ai/Llama-3.2-8B-q4f16_ft-MLC",
+    "api": "mlc",
+    "quantization": "q4f16_ft",
+    "tags": ["llama-3.2-8b", "q4f16_ft", "agx-orin", "orin-nx", "orin-nano"]
+  },
+  "llama-3.2-8b-q4f16_1-mlc": {
+    "name": "Llama-3.2-3B-q4f16_1-MLC",
+    "url": "https://huggingface.co/mlc-ai/Llama-3.2-3B-q4f16_ft-MLC",
+    "api": "mlc",
+    "quantization": "q4f16_ft",
+    "tags": ["llama-3.2-8b", "mlc"]
+  },
+  "gemma": {
+    "name": "Google Gemma",
+    "tags": ["llm"]
+  },
+  "gemma-2-2b": {
+    "name": "Gemma-2-2B",
+    "tags": ["gemma", "agx-orin", "orin-nx"],
+    "url": "https://huggingface.co/gemma/gemma-2-2b-it",
+    "api": "hf"
+  }
+}

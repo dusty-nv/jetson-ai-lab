@@ -34,13 +34,19 @@ function htmlToNodes(html) {
     return template.content.childNodes;
 }
 
-const rows = htmlToNodes('<tr><td>foo</td></tr><tr><td>bar</td></tr>');
 
-
-function exists(data){
-    return (data !== null && data !== undefined);
+/*
+ * Remove an element from DOM (https://stackoverflow.com/a/50475223)
+ * document.getElementsByID('my_div').remove();
+ */
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
 }
 
-function capitalize(text) {
-    return text.charAt(0).toUpperCase() + text.slice(1)
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = this.length - 1; i >= 0; i--) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
 }

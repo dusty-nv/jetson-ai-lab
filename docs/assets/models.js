@@ -1,14 +1,297 @@
 /*
- * Model registry (parsed from json)
+ * Search and navigate through registry resources
  */
-class ModelRegistry {
-  /* path on the server to the model registry */
-  static JSON_PATH="/assets/test_family.json";
+class RegistryBrowser {
+  /*
+   * Create HTML elements and add them to parent, if provided.
+   * Required args: registry, parent
+   * Optional args: id, tags, layout, filter_tags, filter_op)
+   */
+  constructor(args) {
+    this.id = args.id ?? 'registry-browser';
+    this.node = null;
+    this.parent = as_element(args.parent);
+    this.layout = args.layout ?? 'grid';
+    this.registry = args.registry;
+    this.filter_tags = args.filter_tags ?? [];
+    this.filter_op = args.filter_op ?? 'and';
+    
+    this.init();
+    this.filter();
+  }
+  
+  /*
+   * Combine the steps of fetching the json and building the browser
+   * @see RegistryBrowser constructor for arguments
+   */
+  static async load(args) {
+    args.url ??= '/assets/registry.json';
+    args.registry = await Registry.load(args.url);
+    return new RegistryBrowser(args);
+  }
 
-  /* window.onload = (() => new ModelZoo(parent)) */
-  constructor(parent) {
-    this.parent = parent;
+  /*
+   * Query the registry for resources that have matching tags.
+   * This changes the filtering tags and mode (between 'or' and 'and')
+   */
+  filter(args={}) {
+    console.log('Applying filters for query:', args);
+    if( 'tags' in args )
+      this.filter_tags = args.tags;
+    if( 'op' in args )
+      this.filter_op = args.op;
+    this.filtered = this.registry.filter(this.filter_tags, this.filter_op);
+    if( !('update' in args) || args.update )
+      this.update();
+    return this.filtered;
+  }
 
+  /*
+   * Generate the static html template for the dynamic elements
+   */
+  init() {
+    const select2_id = `${this.id}-select-tags`;
+    const self = this; // use in nested functions
+
+    let html = `
+      <div class="flex flex-column">
+        <div class="flex flex-row">
+          <style>
+            .select2-tree-option:before { content: "- "; }
+    `;
+
+    for( let i=1; i < 10; i++ ) {
+      html += `.select2-tree-depth-${i} { padding-left: ${i}em; } \n`
+    }
+    
+    html += `
+      </style>
+      <select id="${select2_id}" class="${this.id}-select2" multiple style="flex-grow: 1;">
+    `;
+
+    html += this.gatherReduce({
+      key: this.registry.tree,
+      func: (key, data, depth) => {
+      return `<option class="select2-tree-option select2-tree-depth-${depth}" 
+        ${self.filter_tags.includes(key) ? "selected" : ""} 
+        value="${key}">${self.registry.index[key].name}</option>`
+        + data;
+    }});
+
+    const filter_op_help = "OR will search for any of the tags.\nAND will search for resources having all the tags."
+    const browser_layout_help = "Grid or list layout"
+
+    html += `</select>
+          <div style="margin-left: 10px;" title="${filter_op_help}">
+            <input id="toggle-on" class="toggle toggle-left" name="toggle" value="true" type="radio" ${this.filter_op == "and" ? "checked" : ""}>
+            <label for="toggle-on" class="toggle-btn">And</label>
+            <input id="toggle-off" class="toggle toggle-right" name="toggle" value="false" type="radio" ${this.filter_op == "or" ? "checked" : ""}>
+            <label for="toggle-off" class="toggle-btn">Or</label>
+          </div>
+          <div style="margin-left: 10px;" title="${browser_layout_help}">
+            <input id="toggle-on-grid" class="toggle toggle-left" name="toggle2" value="true" type="radio" checked>
+            <label for="toggle-on-grid" class="toggle-btn bi bi-grid-3x3-gap-fill"></label>
+            <input id="toggle-off-grid" class="toggle toggle-right" name="toggle2" value="false" type="radio"}>
+            <label for="toggle-off-grid" class="toggle-btn bi bi-list-ul"></label>
+          </div>
+        </div>
+        <div id="${this.id}-card-container">
+    `;
+
+    html += `</div></div>`;
+
+    this.node = htmlToNode(html.trim());
+    this.parent.appendChild(this.node);
+
+    $(`#toggle-on`).on('click', () => self.filter({op: 'and'})); 
+    $(`#toggle-off`).on('click', () => self.filter({op: 'or'})); 
+
+    $(`#${select2_id}`).select2({
+      allowClear: true,
+      tags: true,
+      tokenSeparators: [',', ' '],
+      placeholder: 'Select tags to filter',
+      templateResult: function (data) { 
+        // https://stackoverflow.com/a/30948247
+        if (!data.element) {
+          return data.text;
+        }
+    
+        var $element = $(data.element);
+        var $wrapper = $('<span></span>');
+
+        $wrapper.addClass($element[0].className);
+        $wrapper.text(data.text);
+    
+        return $wrapper;
+      }
+    });
+
+    $(`#${select2_id}`).on('change', (evt) => {
+      const tags = Array.from(evt.target.selectedOptions)
+                        .map(({ value }) => value);
+      console.log('User changed search tags:', tags);
+      self.filter({tags: tags});
+    });
+  }
+
+  /*
+   * Generates HTML for grid view
+   */
+  layoutGrid(key, data, depth) {
+    const name = this.registry.index[key].name;
+    if( depth == 0 ) {
+      return data;
+    }
+    else if( depth == 1 ) {
+      return `
+        <div>
+          <h1>${name}</h1>
+          <div class="flex flex-row">
+            ${data}
+          </div>
+        </div>`;
+    }
+    else if( depth == 2 ) {
+      return `
+        <div class="card align-top" id="${key}_card">
+          <div class="card-body">
+            <span class="card-title">${name}</span>
+            ${data}
+          </div>
+        </div>`;
+    }
+    else if( depth == 3 ) {
+      for( let tag of this.registry.flat[key].tags ) {
+        const resource = this.registry.index[tag];
+        if( resource.pin ) {
+          data = data + `
+            <button data-model="${key}" class="btn-green btn-sm btn-open-model">${resource.name}</button>
+          `;
+        }
+      }
+      return `
+        <div class="card-sm align-top" id="${key}_card">
+          <div class="card-body-sm">
+            <div class="card-title-sm">${name}</div>
+            ${data}
+          </div>
+        </div>`;
+    }
+    return data;
+  }
+
+  /*
+   * Generate the templated html and add elements to the dom
+   */
+  update(index) {
+    if( !exists(index) )
+      index = this.filtered;
+
+    console.log('Updating layout with:', index);
+
+    // reset dynamic cards
+    let card_container = $(`#${this.id}-card-container`);
+    card_container.empty(); 
+
+    // layout functions
+    const layouts = {
+      grid: this.layoutGrid.bind(this)
+    };
+
+    if( !(this.layout in layouts) ) {
+      console.error(`Unsupported layout requested:  '${this.layout}`);
+      return;
+    }
+
+    // generate dynamic content
+    let html = `<div style="margin-top: 15px;">`;
+
+    html += this.gatherReduce({
+      key: this.registry.tree, 
+      func: layouts[this.layout]
+    });
+
+    html += `</div>`;
+
+    /*for( key in index ) {
+      const res = index[key];
+
+      html += `
+        <div class="card-sm align-top" id="${key}">
+          <div class="card-body-sm">
+            <div class="card-title-sm">${res.name}</div>`;
+
+      html += `</div></div>`;
+    }*/
+
+    card_container.html(html);
+
+    $('.btn-open-model').on('click', (evt) => {
+      console.log(`Opening launcher dialog`, evt);
+      const dialog = new FieldEditor({
+        key: evt.target.dataset.model,
+        registry: this.registry,
+      });
+    });
+    
+    /*for( let button of node.getElementsByClassName("btn-open-model") ) {
+      button.addEventListener('click', this.onModelOpen.bind(this));
+    }*/
+  }
+
+  /*
+   * Recursively walk resource tree to generate web controls.
+   * The callback function should return html for that element.
+   */
+  gatherReduce(args) {
+    if( !exists(args.key) || !exists(args.func) ) {
+      console.error(`RegistryBrowser.gatherReduce() requires 'key' and 'func' arguments`, args);
+      return;
+    }
+    args.data = '';
+    if( is_string(args.key) ) {
+      //console.log('GATHERREDUCE', args, 'THIS', this);
+      for( let child of this.registry.map[args.key].children )
+        args.data += this.gatherReduce({
+          key: child, 
+          func: args.func,
+          depth: args.depth+1,
+          data: '',
+        });
+      return args.func(args.key, args.data, args.depth ?? 0);
+    }
+    else {
+      //console.log('ENTER GATHER', args, 'THIS', this, 'KEY', args.key);
+      for( let root in args.key )
+        args.data += this.gatherReduce({
+          key: root, 
+          func: args.func,
+          depth: args.depth ?? 0,
+          data: '',
+        });
+    }
+    return args.data;
+  }
+
+  /*
+   * Remove this from the DOM
+   */
+  remove() {
+    if( !exists(this.node) )
+      return;
+
+    this.node.remove();
+    this.node = null;
+  }
+}
+
+
+
+
+
+
+/*    
     fetch(ModelRegistry.JSON_PATH)
     .then(response => response.json())
     .then(registry => {
@@ -58,13 +341,6 @@ class ModelRegistry {
 
           parent.appendChild(node);
         }});
-
-    /*.catch(error => {
-        // Handle any errors
-        console.error('Error:', error);
-    });*/
-
-    //parent.appendChild(htmlToNode('<p>HELLO ABC123 DEF456</p>'));
   }
 
   findModel(model) {
@@ -80,7 +356,7 @@ class ModelRegistry {
       }
     }
 
-    console.warning(`could not find model ${model}`);
+    console.warn(`could not find model ${model}`);
   }
 
   findConfig(config) {
@@ -127,6 +403,7 @@ class ModelRegistry {
     let html = `
       <div class="flex flex-column">
         <div>
+          <select style="margin-right: 10px;"> 
     `;
 
     for( let link_name in model.links ) {
@@ -185,6 +462,6 @@ class ModelRegistry {
     })});
   }
 }
-  
+*/ 
 
   
