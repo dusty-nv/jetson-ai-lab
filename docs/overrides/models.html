@@ -1,23 +1,6 @@
 <!-- Custom HTML site displayed as the Home chapter -->
 {% extends "main.html" %}
 {% block extrahead %}
-  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="/assets/html.js"></script>  
-  <script type="text/javascript" src="/assets/utils.js"></script>  
-  <script type="text/javascript" src="/assets/registry.js"></script>  
-  <script type="text/javascript" src="/assets/models.js"></script>  
-  <script type="text/javascript" src="/assets/modal.js"></script>  
-  <script type="text/javascript" src="/assets/fields.js"></script> 
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-  <link rel="stylesheet" href="/css/flex.css">
-  <link rel="stylesheet" href="/css/button.css">
-  <link rel="stylesheet" href="/css/card.css">
-  <link rel="stylesheet" href="/css/modal.css">
-
   <style>
     body {
       background-color: #efefef;
@@ -29,28 +12,21 @@
     }
   </style>
   
-  <script type="text/javascript">
+  <script type="module">
+    import { GraphTags, SearchBar } from '/portal/nanolab.js';
 
-    function on_window_load() {
-        /* this works if you add async to the function definition
-        const registry = await Registry.load("/assets/registry.json");
-        var browser = new RegistryBrowser(registry, "registry_browser");*/
+    const GRAPH_TAGS = '/assets/registry.json';
 
-        /*Registry.load("/assets/registry.json").then(registry => {
-          return new RegistryBrowser(registry, "registry_browser");
-        });*/
-
-        RegistryBrowser.load({
-          url: "/assets/registry.json", 
-          parent: "registry_browser",
-          filter_tags: ["models"],
-        }).then(x => console.log("Window done loading", x));
-
-        //var modal = make_modal("myModal", "meta-llama/LLama-3-hf-instruct");
-        //model_container.insertAdjacentElement("afterend", modal);
-    }
-    
-    window.onload = on_window_load; 
+    window.onload = () => {
+      GraphTags.load(GRAPH_TAGS).then(db => {
+        var searchBar = new SearchBar({
+          db: db,
+          tags: ['models'],
+          parent: 'nanolab_container'
+        });
+        console.log("Window done loading");
+      });
+    };
   </script>
 
   {{ super() }}
@@ -62,7 +38,7 @@
 {% endblock %}
 {% block content %}
 
-<div id="registry_browser" class="container flex-column">
+<div id="nanolab_container" class="container flex-column">
 
 </div>
 
