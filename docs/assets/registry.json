@@ -11,25 +11,25 @@
     "name": "Vision / Language Models",
     "tags": ["models"]
   },
-  "field": {
-    "name": "field",
+  "property": {
+    "name": "property",
     "tags": []
   },
   "bool": {
     "name": "bool",
-    "tags": ["field"]
+    "tags": ["property"]
   },
   "number": {
     "name": "number",
-    "tags": ["field"]
+    "tags": ["property"]
   },
   "select": {
     "name": "select",
-    "tags": ["field"]
+    "tags": ["property"]
   },
   "string": {
     "name": "string",
-    "tags": ["field"]
+    "tags": ["property"]
   },
   "url": {
     "name": "URL",
@@ -96,17 +96,17 @@
   },
   "llama-3.2-8b-q4f16_ft-mlc": {
     "name": "Llama-3.2-8B-q4f16_ft-MLC",
-    "url": "https://huggingface.co/mlc-ai/Llama-3.2-8B-q4f16_ft-MLC",
+    "url": "hf.co/dusty-nv/Llama-3.2-3B-Instruct-q4f16_ft-MLC",
     "api": "mlc",
     "quantization": "q4f16_ft",
-    "tags": ["llama-3.2-8b", "q4f16_ft", "agx-orin", "orin-nx", "orin-nano"]
+    "tags": ["llama-3.2-8b", "mlc", "q4f16_ft", "agx-orin", "orin-nx", "orin-nano"]
   },
   "llama-3.2-8b-q4f16_1-mlc": {
     "name": "Llama-3.2-3B-q4f16_1-MLC",
-    "url": "https://huggingface.co/mlc-ai/Llama-3.2-3B-q4f16_ft-MLC",
+    "url": "hf.co/mlc-ai/Llama-3.2-3B-Instruct-q4f16_1-MLC",
     "api": "mlc",
-    "quantization": "q4f16_ft",
-    "tags": ["llama-3.2-8b", "mlc"]
+    "quantization": "q4f16_1",
+    "tags": ["llama-3.2-8b", "mlc", "q4f16_1", "agx-orin", "orin-nx", "orin-nano"]
   },
   "gemma": {
     "name": "Google Gemma",

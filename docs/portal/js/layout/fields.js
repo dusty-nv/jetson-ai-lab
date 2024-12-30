@@ -1,5 +1,6 @@
 /*
- * Controls for changing strings, numbers, bools, and selections.
+ * Controls for changing strings, numbers, bools, and drop-downs.
+ * These have the `.field-control` class applied for selecting from the DOM.
  */
 function FieldControl(args) {
   const key = args.key;
@@ -7,24 +8,25 @@ function FieldControl(args) {
   const registry = args.registry;
 
   const field = registry.flat[key];
-  const type_key = registry.map[key].parents[0];
-  const children = registry.map[key].children;
+  const type_key = registry.parents[key][0];
+  const children = registry.children[key];
 
   const multiple = args.multiple ?? field.multiple;
   const multiline = args.multiline ?? field.multiline;
   const value_html = exists(value) ? `value="${value}"` : "";
 
-  const id = args.id ?? `${key}-${type_key}-control`;
+  const id = args.id ?? `${key}-control`;
+  const data = `data-key="${key}"`;
 
   let html = `
     <div style="margin-bottom: 10px;">
       <label for="${id}" class="form-label">${field.name}</label>
   `;
-  
-  console.log('FIELD', field, 'TYPE_KEY', type_key, 'CHILDREN', children);
+
+  //console.log('FIELD', field, 'TYPE_KEY', type_key, 'CHILDREN', children);
 
   if( type_key == 'select' ) {
-    var multiple_html = multiple ? 'multiple="multiple"' : '';
+    let multiple_html = multiple ? 'multiple="multiple"' : '';
 
       /*var options = param['options'];
       if( options.length > 8 )
@@ -37,7 +39,7 @@ function FieldControl(args) {
       select2_args[id] = {tags: true, placeholder: 'enter'}; //tags: true, placeholder: 'enter'};
     }*/
     
-    html += `<br/><select id="${id}" ${multiple_html}>\n`;
+    html += `<select id="${id}" class="field-control" ${data} ${multiple_html}>\n`;
     
     for( let child_key of children ) {
       if( child_key == value )
@@ -63,10 +65,10 @@ function FieldControl(args) {
     input_html += `</datalist>`; 
   }*/
   else if( exists(multiline) ) { // form-control
-    html += `<textarea id="${id}" rows=${multiline}>${value}</textarea>`;
+    html += `<textarea id="${id}" class="field-control" rows=${multiline} ${data}>${value}</textarea>`;
   }
   else if( type_key == 'color' ) {
-    html += `<input id="${id}" type="color" ${value_html}/>`;
+    html += `<input id="${id}" class="field-control" type="color" ${value_html} ${data}/>`;
   }
   else {
     let type = type_key;
@@ -74,17 +76,20 @@ function FieldControl(args) {
     if( args.password )
       type = 'password';
       
-    // TODO:  hyperlinks in text
     // https://stackoverflow.com/questions/3060055/link-in-input-text-field
-    html += `<input id="${id}" type="${type}" ${value_html}>`;
+    if( key == 'url' || type_key == 'url' ) {
+      html += `<sup><a id="${id}-link" class="field-link bi bi-box-arrow-up-right" target="_blank"></a></sup>`;
+    }
+
+    html += `<input id="${id}" class="field-control" type="${type}" ${value_html}>`;
   }
 
   html += `</div>`;
-  console.log(`Generated ${type_key} control for '${key}' (id=${id})\n  ${html}`);
+  //console.log(`Generated ${type_key} control for '${key}' (id=${id})\n  ${html}`);
   return html;
 }
 
-  
+ 
 
 /*
  * Web dialog for remotely controlling resource settings.
@@ -97,7 +102,7 @@ class FieldEditor {
    *   show (bool) -- Display the launcher dialog upon create (default=true)
    */
   constructor(args) {
-    this.id = args.id ?? `${args.key}-launcher`;
+    this.id = args.id ?? `${args.key}-config`;
     this.key = args.key;
     this.key_org = args.key;
     this.registry = args.registry;
@@ -109,7 +114,7 @@ class FieldEditor {
 
     console.log(`Opening launch configuration for ${this.key}`);
     let html = `<div class="flex flex-column"><div>`;
-    this.children = this.registry.map[this.key].children;
+    this.children = this.registry.children[this.key];
 
     // presets menu (if this resource has children)
     if( this.children.length > 0 ) {
@@ -137,9 +142,17 @@ class FieldEditor {
       html
     );
     
-    if( this.children.length > 0 )
+    if( this.children.length > 0 ) {
       this.key = this.children[0];
 
+      document.getElementById(`${this.id}-preset-select`)
+              .addEventListener('change', (evt) => {
+                console.log(`Changing to preset ${evt.target.value}`, evt, this);
+                this.key = evt.target.value;
+                this.refresh();
+              });
+    }
+      
     this.refresh();
 
     if( args.show ?? true )
@@ -154,7 +167,7 @@ class FieldEditor {
     const model = this.registry.flat[key];
     const panel = document.getElementById(`${this.id}-launch-panel`);
     const links = document.getElementById(`${this.id}-link-group`);
-    const fields = this.registry.fields[key];
+    const fields = this.registry.props[key];
 
     console.log(`Refreshing launcher for configuration:\n  key=${key}\n  fields=${fields}`);
     let html = ``;
@@ -172,13 +185,34 @@ class FieldEditor {
     for( let field_key of fields ) {
       const field = this.registry.flat[field_key];
       const value = this.registry.flat[key][field_key];
-      const type_key = this.registry.map[field_key].parents[0];
+      const type_key = this.registry.parents[field_key][0];
       //html += `<p><b>${field.name}</b>&nbsp;(${type_key})<code>${value}</code></p>`;
       html += FieldControl({key: field_key, value: value, registry: this.registry});
     }
     
     html += `</div></div>`;
     panel.innerHTML = html;
-    return html;
+
+    for( let control of panel.getElementsByClassName("field-control") ) {
+      control.addEventListener('change', this.setField.bind(this));
+
+      control.addEventListener('keydown', (evt) => {
+        const event_key = control.dataset.key;
+        console.log(`Value of ${event_key} (id=${control.id}) changed to '${control.value}'`);
+        
+        if( event_key == 'url' ) {
+          panel.getElementById()
+        }
+      });
+    }
+  }
+
+  setField(args={}) {
+    const id = args.target.id;
+    const event_key = args.target.dataset.key;
+    console.log(`Value of ${event_key} (id=${id}) changed to '${args.target.value}'`);
+    if( event_key == 'url' ) {
+      panel.getElementById(`${id}-link`).href = control.value;
+    }
   }
 }

@@ -1,14 +1,18 @@
 /*
  * Search and navigate through registry resources
  */
-class RegistryBrowser {
+import { 
+  GraphTags, exists, include, is_string, is_list, as_element, htmlToNode 
+} from '../nanolab.js';
+
+export class GraphBrowser {
   /*
    * Create HTML elements and add them to parent, if provided.
    * Required args: registry, parent
    * Optional args: id, tags, layout, filter_tags, filter_op)
    */
   constructor(args) {
-    this.id = args.id ?? 'registry-browser';
+    this.id = args.id ?? 'graph-browser';
     this.node = null;
     this.parent = as_element(args.parent);
     this.layout = args.layout ?? 'grid';
@@ -26,8 +30,8 @@ class RegistryBrowser {
    */
   static async load(args) {
     args.url ??= '/assets/registry.json';
-    args.registry = await Registry.load(args.url);
-    return new RegistryBrowser(args);
+    args.registry = await GraphDB.load(args.url);
+    return new GraphBrowser(args);
   }
 
   /*
@@ -40,8 +44,11 @@ class RegistryBrowser {
       this.filter_tags = args.tags;
     if( 'op' in args )
       this.filter_op = args.op;
-    this.filtered = this.registry.filter(this.filter_tags, this.filter_op);
-    if( !('update' in args) || args.update )
+    this.filtered = this.registry.query({
+      where: 'parents',
+      in: [this.filter_tags]
+    });
+    if( args.update ?? true )
       this.update();
     return this.filtered;
   }
@@ -56,6 +63,7 @@ class RegistryBrowser {
     let html = `
       <div class="flex flex-column">
         <div class="flex flex-row">
+          <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
           <style>
             .select2-tree-option:before { content: "- "; }
     `;
@@ -70,7 +78,7 @@ class RegistryBrowser {
     `;
 
     html += this.gatherReduce({
-      key: this.registry.tree,
+      key: this.registry.roots,
       func: (key, data, depth) => {
       return `<option class="select2-tree-option select2-tree-depth-${depth}" 
         ${self.filter_tags.includes(key) ? "selected" : ""} 
@@ -140,6 +148,7 @@ class RegistryBrowser {
    */
   layoutGrid(key, data, depth) {
     const name = this.registry.index[key].name;
+    console.log('LAYOUT_GRID  key', key, 'name', name, 'data', data, 'depth', depth);
     if( depth == 0 ) {
       return data;
     }
@@ -208,7 +217,7 @@ class RegistryBrowser {
     let html = `<div style="margin-top: 15px;">`;
 
     html += this.gatherReduce({
-      key: this.registry.tree, 
+      key: this.registry.roots, 
       func: layouts[this.layout]
     });
 
@@ -229,7 +238,7 @@ class RegistryBrowser {
 
     $('.btn-open-model').on('click', (evt) => {
       console.log(`Opening launcher dialog`, evt);
-      const dialog = new FieldEditor({
+      const dialog = new PropertyEditor({
         key: evt.target.dataset.model,
         registry: this.registry,
       });
@@ -251,8 +260,7 @@ class RegistryBrowser {
     }
     args.data = '';
     if( is_string(args.key) ) {
-      //console.log('GATHERREDUCE', args, 'THIS', this);
-      for( let child of this.registry.map[args.key].children )
+      for( let child of this.registry.children[args.key] )
         args.data += this.gatherReduce({
           key: child, 
           func: args.func,
@@ -262,14 +270,16 @@ class RegistryBrowser {
       return args.func(args.key, args.data, args.depth ?? 0);
     }
     else {
-      //console.log('ENTER GATHER', args, 'THIS', this, 'KEY', args.key);
-      for( let root in args.key )
+      for( let root in args.key ) {
+        if( is_list(args.key) ) // list[key] instead of dict[key]
+          root = args.key[root]; 
         args.data += this.gatherReduce({
           key: root, 
           func: args.func,
           depth: args.depth ?? 0,
           data: '',
         });
+      }
     }
     return args.data;
   }
