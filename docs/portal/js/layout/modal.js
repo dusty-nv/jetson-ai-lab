@@ -1,9 +1,14 @@
+#!/usr/bin/env node
+import { 
+  htmlToNode, exists
+} from '../nanolab.js';
+
 /*
  * Modal dialog maker
  */
-class ModalDialog {
+export class ModalDialog {
   
-  constructor(id, title, body) {
+  constructor({id, title, body}) {
     this.id = id;
     let html = `
       <div class="modal" id="${id}" >
@@ -26,7 +31,7 @@ class ModalDialog {
       this.body.appendChild(htmlToNode(body.trim()));
     }
 
-    document.getElementById('registry_browser').insertAdjacentElement("afterend", this.node);
+    document.getElementById('nanolab_container').insertAdjacentElement("afterend", this.node);
     //document.body.appendChild(this.node); //prepend(this.node);
     
     const close_btn = this.node.getElementsByClassName("modal-close")[0];

@@ -8,8 +8,11 @@ export * from './utils/types.js';
 export * from './db/graphTags.js';
 
 export * from './layout/buttons.js';
+export * from './layout/fields.js';
+export * from './layout/modal.js';
 export * from './layout/treeLayout.js';
 export * from './layout/treeGrid.js';
 export * from './layout/treeList.js';
 
+export * from './panels/propertyEditor.js';
 export * from './panels/searchBar.js';

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { 
   GraphTags, TreeGrid, TreeList, ToggleSwitch, 
-  htmlToNode, exists, as_element,
-  is_string, is_list, len
+  PropertyEditor, htmlToNode, exists,
+  as_element, is_string, is_list, len
 } from '../nanolab.js';
 
 /*
@@ -61,13 +61,13 @@ export class SearchBar {
       in: tags
     });
 
-    for( const tag of tags ) { // add tags themselves to query
+    for( const tag of tags ) { // add tags themselves from query
       if( !this.results.includes(tag) )
         this.results.push(tag); 
     } 
 
     if( update ?? true )
-      this.update();
+      this.refresh();
 
     return this.results;
   }
@@ -134,8 +134,8 @@ export class SearchBar {
     this.node = htmlToNode(html);
     this.parent.appendChild(this.node);
 
-    gateSwitch.toggled((gate) => self.update({gate: gate}));
-    layoutSwitch.toggled((layout) => self.update({layout: layout}));
+    gateSwitch.toggled((gate) => self.refresh({gate: gate}));
+    layoutSwitch.toggled((layout) => self.refresh({layout: layout}));
 
     $(`#${select2_id}`).select2({
       allowClear: true,
@@ -156,14 +156,14 @@ export class SearchBar {
     $(`#${select2_id}`).on('change', (evt) => {
       const tags = Array.from(evt.target.selectedOptions)
                         .map(({ value }) => value);
-      self.update({tags});
+      self.refresh({tags});
     });
   }
 
   /*
    * Generate the templated html and add elements to the dom
    */
-  update({keys, tags, gate, layout}={}) {
+  refresh({keys, tags, gate, layout}={}) {
     if( exists(layout) ) {
       if( !(layout in this.layouts) )
         throw new Error(`[SearchBar] Unsupported layout requested:  '${this.layout}`);
@@ -195,13 +195,12 @@ export class SearchBar {
 
     card_container.html(html);
 
-    /*$('.btn-open-model').on('click', (evt) => {
-      console.log(`Opening launcher dialog`, evt);
+    $('.btn-open-item').on('click', (evt) => {
       const dialog = new PropertyEditor({
+        db: this.db,
         key: evt.target.dataset.model,
-        registry: this.db,
       });
-    });*/
+    });
     
     /*for( let button of node.getElementsByClassName("btn-open-model") ) {
       button.addEventListener('click', this.onModelOpen.bind(this));

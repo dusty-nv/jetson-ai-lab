@@ -50,7 +50,7 @@ export function TreeGridItem({db, key, data, name}) {
     const resource = db.index[tag];
     if( resource.pin ) {
       data = data + `
-        <button data-model="${key}" class="btn-green btn-sm btn-open-model">${resource.name}</button>
+        <button data-model="${key}" class="btn-green btn-sm btn-open-item">${resource.name}</button>
       `;
     }
   }
