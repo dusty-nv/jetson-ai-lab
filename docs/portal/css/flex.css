@@ -44,7 +44,39 @@
 }
 
 .fill-space {
-    flex: 1;
+  flex: 1;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.half-height {
+  height: 50%;
+}
+
+.h100 {
+  height: 100%;
+}
+
+.h50 {
+  height: 50%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.w50 {
+  width: 50%;
 }
 
 .align-top {

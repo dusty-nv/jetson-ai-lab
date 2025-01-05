@@ -106,7 +106,7 @@
   /*text-shadow: rgba(50,50,50,0.4) 3px 0 3px;*/
   border-radius: 0px 0px 12px 12px;
   backdrop-filter: blur(8px);
-  background: linear-gradient(0deg, rgba(190,190,190,0.7) 0%,rgb(205,205,205,0.7) 100%);
+  background: linear-gradient(0deg, rgba(190,190,190,0.75) 0%,rgb(205,205,205,0.75) 100%);
 }
 
 .modal-body .btn-md {

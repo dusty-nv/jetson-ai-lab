@@ -12,6 +12,7 @@ pre[class*="language-"] {
   background: var(--theme-gray-darker);
   padding: 15px 15px;
   margin: 5px 0px 0px 0px;
+  height: 100%;
 }
 
 pre[class*="language-"] > code[class*="language-"] {

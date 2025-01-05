@@ -140,7 +140,7 @@
   & + label {
     background: var(--theme-gray-darker);
     color: rgba(255,255,255,0.85);
-    box-shadow: 5px 5px 1px rgb(100,100,100);
+    box-shadow: 5px 5px 1px rgb(115,115,115);
     padding: 8px 10px;
     border-left: 1px solid rgba(255,255,255,0.15);
     border-right: 1px solid rgba(255,255,255,0.15);
@@ -149,7 +149,7 @@
   &:hover + label {
     color: rgba(255,255,255,1);
     background: hsla(81, 100%, 33.1%, 1.0);
-    box-shadow: 5px 5px 3px hsla(81, 100%, 22%, 0.8); /*hsla(81, 100%, 29%, 0.95);*/
+    box-shadow: 5px 5px 3px hsla(81, 100%, 22%, 0.9); /*hsla(81, 100%, 29%, 0.95);*/
     border-left: 1px solid rgba(255,255,255,0.0);
     border-right: 1px solid rgba(255,255,255,0.0);
   }

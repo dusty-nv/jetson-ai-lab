@@ -41,10 +41,11 @@
 }
 
 .gemma-header {
-  background-image: linear-gradient(90deg, hsl(218.8, 21.2%, 47.3%) 0%, rgb(66, 39, 141) 56%, rgba(63, 82, 166, 0) 65%), 
-                      url('/portal/data/models/images/headers/chat-0.webp');
-  background-size: 100%, 44%; 
-  background-position-y: 0px, -60px;
+  background-image: linear-gradient(90deg, hsl(218.8, 21.2%, 50.3%) 0%, rgb(66, 39, 141) 57%, rgba(63, 82, 166, 0) 65%), 
+                    url('/portal/data/models/images/headers/chat-0.webp');
+  background-size: 100%, 48%;
+  background-position-x: 0px, 565px;
+  background-position-y: 0px, -74px;
 }
 
 .hf-smol-header {

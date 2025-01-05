@@ -143,22 +143,33 @@ export class PropertyEditor {
     this.cmd = composerize('docker run -it --rm ubuntu:latest', null, 'latest', 2);
     this.cmd = this.cmd.substring(this.cmd.indexOf("\n") + 1);
 
+    const codeToggleName=`${this.id}-code-toggle`;
+
     // dynamic header & main panel
     html += `
         </table>
       </div>
-      <div id="${this.id}-launch-panel" style="margin-left: 10px; flex-grow: 1;">
-        <div>
-          <div id="${this.id}-code-tabs" class="btn-group">
-            <input type="radio" id="toggle-on2" name="toggle2" checked><label for="toggle-on2">docker run</label><input type="radio" id="toggle-off2" name="toggle2"><label for="toggle-off2">docker compose</label><input type="radio" id="${this.id}-btn-copy" name="toggle2"><label for="${this.id}-btn-copy"><i class="bi bi-copy" title="Copy code to clipboard."></i></label>
-          </div>
-          <div class="code-container" id="${this.id}-code-container">
+      <div id="${this.id}-launch-panel" style="flex-grow: 1; margin-left: 10px;">
+        <div class="full-height">
+          <div id="${this.id}-code-tabs" class="btn-group">` +
+            `<input type="radio" id="${codeToggleName}-run" name="${codeToggleName}" checked>` + 
+            `<label for="${codeToggleName}-run">docker run</label>` +
+            `<input type="radio" id="${codeToggleName}-compose" name="${codeToggleName}">` +
+            `<label for="${codeToggleName}-compose">docker compose</label>` +
+            `<input type="radio" id="${codeToggleName}-python" name="${codeToggleName}">` +
+            `<label for="${codeToggleName}-python">python</label>` +
+            `<input type="radio" id="${codeToggleName}-js" name="${codeToggleName}">` +
+            `<label for="${codeToggleName}-js">javascript</label>` +
+          `</div>
+          <div class="code-container full-height" id="${this.id}-code-container">
             <pre><code class="language-yaml">${this.cmd}</code></pre>
           </div>
         </div>
       </div>
     </div>`;
 
+//"${this.id}-btn-copy" name="${codeToggleName}">` +
+//            `<label for="${this.id}-btn-copy"><i class="bi bi-copy" title="Copy code to clipboard."></i></label>` +
     let panel = document.getElementById(`${this.id}-container`);
     panel.innerHTML = html;
 
