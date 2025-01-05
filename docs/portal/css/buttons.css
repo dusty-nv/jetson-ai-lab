@@ -111,8 +111,8 @@
 
 /* Copy code button used by syntax highlighter */
 .btn-copy {
-  /*float: right;*/
-  margin-left: auto; /* https://stackoverflow.com/a/35270047 */
+  float: right;
+  /*margin-left: auto;  https://stackoverflow.com/a/35270047 */
 }
 
 .btn-copy:hover {

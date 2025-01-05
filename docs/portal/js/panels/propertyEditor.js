@@ -162,24 +162,22 @@ export class PropertyEditor {
             `<label for="${codeToggleName}-js">javascript</label>` +
           `</div>
           <div class="code-container full-height" id="${this.id}-code-container">
-            <pre><code class="language-yaml">${this.cmd}</code></pre>
+            <pre><i id="${this.id}-btn-copy" class="bi bi-copy btn-copy" title="Copy code to clipboard"></i><code class="language-yaml">${this.cmd}</code></pre>
           </div>
         </div>
       </div>
     </div>`;
 
-//"${this.id}-btn-copy" name="${codeToggleName}">` +
-//            `<label for="${this.id}-btn-copy"><i class="bi bi-copy" title="Copy code to clipboard."></i></label>` +
     let panel = document.getElementById(`${this.id}-container`);
     panel.innerHTML = html;
 
     if( this.has_header )
       document.getElementById(`${this.id}-header-extensions`).innerHTML = header;
 
-    /*document.getElementById(`${this.id}-btn-copy`).addEventListener('click', (evt) => {
+    document.getElementById(`${this.id}-btn-copy`).addEventListener('click', (evt) => {
       console.log(`[Property Editor] Copying text from code block to clipboard`);
       navigator.clipboard.writeText(this.cmd);
-    });*/
+    });
 
     Prism.highlightAllUnder(document.getElementById(`${this.id}-code-container`));
 
