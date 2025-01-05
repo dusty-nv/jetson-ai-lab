@@ -13,8 +13,12 @@
     border-radius: 5px 5px 5px 5px;
     box-shadow: 2px 7px 13px 0px rgba(0,0,0,0.2);
     /*background-color: #f8f8f8;*/
-    background: linear-gradient(170deg, rgb(245,245,245,1) 0%,rgb(255,255,255,1)  100%);
+    background: linear-gradient(170deg, rgb(242,242,242,1) 0%,rgb(247,247,247,1)  100%);
 }
+
+/*.card:hover {
+    background: linear-gradient(130deg, rgb(245,245,245,1) 0%,rgb(250,250,250,1)  100%);
+}*/
 
 .card-sm {
     display: flex; 
@@ -25,11 +29,11 @@
     border-color: #000000;
     border-radius: 1px 1px 1px 1px;
     box-shadow: 2px 3px 7px 0px rgba(0,0,0,0.2);
-    background-color: #ececec;
+    background-color: hsl(0, 0%, 89%);
 }
 
 .card-sm:hover {
-    background-color: #f1f1f1;
+    background-color: hsl(0, 0%, 90%);
 }
 
 .card-body {

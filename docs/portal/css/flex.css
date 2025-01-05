@@ -1,8 +1,13 @@
-.container {
-    display: flex;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
+/*.root-container * {
+  all: initial;
+  font-family: var(--theme-text-font);
+}*/
+
+.container, .root-container {
+  display: flex;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
 }
 
 .flex {
@@ -24,8 +29,4 @@
 
 .align-top {
   align-self: start;
-}
-
-.monospace {
-  font-family: monospace, monospace;
 }

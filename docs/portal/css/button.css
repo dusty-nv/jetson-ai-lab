@@ -1,51 +1,17 @@
-/* https://markodenic.com/tools/buttons-generator/ */
-.twitch-button {
-  display: inline-block;
-  outline: 0;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 4px;
-  font-size: 13px;
-  height: 30px;
-  background-color: #74b800; /*#9147ff;*/
-  color: white;
-  padding: 0 10px;         
-}
-  
-.twitch-button:hover {
-  background-color: #81BF15; /*#772ce8;*/
-}  
-
-.btn-mailchimp {
-  display: inline-block;
-  outline: none;
-  cursor: pointer;
-  font-weight: 500;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  height: 36px;
-  line-height: 34px;
-  font-size: 14px;
-  color: #241c15;
-  background-color: #efeeea;
-  transition: background-color 0.2s ease-in-out 0s, opacity 0.2s ease-in-out 0s;
-  padding: 0 10px;
-}
-
-.btn-mailchimp:hover {
-  color: #241c15;
-  background-color: #d9d7cd;
-}
+/* 
+ * Various buttons, toggles, and switches
+ *  https://copy-paste-css.com/
+ *  https://markodenic.com/tools/buttons-generator/ 
+ */
 
 .btn-green {
   color: #e4e4e4;
-  background-color: #74b800;
+  background-color: var(--theme-primary);
 }
 
 .btn-green:hover {
   color: rgb(255,255,255);
-  background-color: #669e00;/*#81BF15;*/
+  background-color: var(--theme-primary-dark);
 }
 
 .btn-yellow, a.btn-yellow {
@@ -76,6 +42,7 @@
   transition: none;
 }
 
+/* Button sizes */
 .btn-md {
   font-size: 15px;
   font-weight: 500;
@@ -98,10 +65,34 @@
   padding: 5px 5px;
   margin-right: 2px;
 }
-  
+
+/* These rounder/transparent buttons get used for tags */
+.btn-oval, a.btn-oval {
+  font-size: 14px;
+  font-weight: 400;
+  padding: 5px 10px;
+  margin-right: 4px;
+  color: rgb(235,235,235);
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: none;
+}
+
+.btn-oval:hover, a.btn-oval:hover, a.btn-oval:active, a.btn-oval:focus {
+  color: rgb(255,255,255);
+  /*font-weight: 500;*/
+  background-color: rgba(255,255,255,0.2);
+  text-decoration-color: rgb(255,255,255);
+  text-decoration-thickness: 1px;
+  transition: none;
+}
+
+/* Non-link buttons (these show pinned content) */
 .pin-green {
   color: #dddddd;
-  background-color: #74b800;
+  background-color: var(--theme-primary);
   font-size: 14px;
   font-weight: 500;
   padding: 5px 5px;
@@ -116,6 +107,66 @@
   font-weight: 500;
   padding: 5px 5px;
   margin: 3px;
+}
+
+/* Copy code button used by syntax highlighter */
+.btn-copy {
+  /*float: right;*/
+  margin-left: auto; /* https://stackoverflow.com/a/35270047 */
+}
+
+.btn-copy:hover {
+  color: rgba(255,255,255,0.85);
+}
+
+/*
+ * Multi-button group using radio buttons.
+ * This allows one option selected at a time.
+ */
+.btn-group {
+  /*margin: 10px;*/
+  margin-top: 5px;
+  padding: 0px;
+  float: right;
+  font-size: 85%;
+}
+
+.btn-group input[type="radio"] {
+  display: none;
+  box-sizing: border-box;
+  margin-top: 10px;
+  /*outline-offset: -4px;*/
+
+  & + label {
+    background: var(--theme-gray-darker);
+    color: rgba(255,255,255,0.85);
+    box-shadow: 5px 5px 1px rgb(100,100,100);
+    padding: 8px 10px;
+    border-left: 1px solid rgba(255,255,255,0.15);
+    border-right: 1px solid rgba(255,255,255,0.15);
+  }
+
+  &:hover + label {
+    color: rgba(255,255,255,1);
+    background: hsla(81, 100%, 33.1%, 1.0);
+    box-shadow: 5px 5px 3px hsla(81, 100%, 22%, 0.8); /*hsla(81, 100%, 29%, 0.95);*/
+    border-left: 1px solid rgba(255,255,255,0.0);
+    border-right: 1px solid rgba(255,255,255,0.0);
+  }
+
+  &:active + label {
+    background: hsla(81, 70%, 25%, 0.95);
+    box-shadow: 5px 5px 3px hsla(81, 100%, 18%, 0.8), inset 0px 4px 2px hsla(81, 100%, 12%, 0.4);
+    /*outline-offset: -4px;
+    transform: scale(0.99);*/
+  }
+
+  &:checked + label {
+    background: hsla(81, 100%, 27%, 0.95);
+    box-shadow: 5px 5px 1px hsla(81, 100%, 22%, 0.8);
+    /*outline-offset: -4px;
+    transform: scale(0.99);*/
+  }
 }
 
 /* 
@@ -144,7 +195,7 @@ input[type="radio"].toggle {
           color: #1a1a1a;
       }
       &:after{
-          background: #74b800;
+          background: var(--theme-primary);
           content: "";
           height: 100%;
           position: absolute;
@@ -154,8 +205,14 @@ input[type="radio"].toggle {
           z-index: -1;
       }
   }
+  &.toggle-left {
+    background-color: rgb(30,30,30),
+  }
   &.toggle-left + label {
       border-right: 0;
+      &:hover {
+        background-color: rgb(30,30,30),
+      }
       &:after{
           left: 100%
       }
