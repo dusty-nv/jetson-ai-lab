@@ -67,7 +67,7 @@ export class GraphTags {
    * or having been loaded from json (see `TagDB.load` to load from file)
    */
   constructor(index) {
-      this.index = index;
+      this.index = this.sanitize(index);
       this.flat = this.flatten();
       this.props = this.typed();
       [
@@ -177,41 +177,6 @@ export class GraphTags {
     return true; // default filter passthrough
   }
 
-  /*
-   * Recursively traverse resource tree and notify a visitor function
-   * upon visiting each node in the graph.  A data element is provided to
-   * the callback function that is used to gather and combine the results.
-   */
-  walk(args) {
-    if( !exists(args.key) || !exists(args.func) ) {
-      console.error(`[GraphTags] walk() requires 'key' and 'func' arguments`, args);
-      return;
-    }
-    if( is_string(args.key) ) {
-      for( let child of this.children[args.key] )
-        args.data = this.walk({
-          key: child, 
-          func: args.func,
-          data: args.data,
-          depth: args.depth+1,
-        });
-      return args.func(this, args.key, args.data, args.depth ?? 0);
-    }
-    else {
-      for( let root in args.key ) {
-        if( is_list(args.key) ) // list[key] instead of dict[key]
-          root = args.key[root]; 
-        args.data = this.walk({
-          key: root, 
-          func: args.func,
-          data: args.data,
-          depth: args.depth ?? 0,
-        });
-      }
-    }
-    return args.data;
-  }
-
   /**
    * An additional wrapper on top of `walk()` that builds in the agreggation
    * by appending the output from the last node with the previous.
@@ -274,6 +239,41 @@ export class GraphTags {
     return data;
   }
   
+  /*
+   * Recursively traverse resource tree and notify a visitor function
+   * upon visiting each node in the graph.  A data element is provided to
+   * the callback function that is used to gather and combine the results.
+   */
+  walk(args) {
+    if( !exists(args.key) || !exists(args.func) ) {
+      console.error(`[GraphTags] walk() requires 'key' and 'func' arguments`, args);
+      return;
+    }
+    if( is_string(args.key) ) {
+      for( let child of this.children[args.key] )
+        args.data = this.walk({
+          key: child, 
+          func: args.func,
+          data: args.data,
+          depth: args.depth+1,
+        });
+      return args.func(this, args.key, args.data, args.depth ?? 0);
+    }
+    else {
+      for( let root in args.key ) {
+        if( is_list(args.key) ) // list[key] instead of dict[key]
+          root = args.key[root]; 
+        args.data = this.walk({
+          key: root, 
+          func: args.func,
+          data: args.data,
+          depth: args.depth ?? 0,
+        });
+      }
+    }
+    return args.data;
+  }
+
   /*
    * Return an index where the tag lists include all parent tags
    * in the heirarchy, up to and including the maximum tree depth.
@@ -422,6 +422,25 @@ export class GraphTags {
     }
 
     return [parents, children, ancestors, descendants, roots];
+  }
+
+  /**
+   * Check for missing entries and malformed keys
+   */
+  sanitize(index) {
+    for( let key in index ) {
+      let obj = index[key];
+      if( is_string(obj) )
+        obj = [obj];
+      if( is_list(obj) )
+        obj = {name: key, tags: obj};
+      if( !('name' in obj) )
+        obj.name = key;
+      if( !('tags' in obj) )
+        obj.tags = [];
+      index[key] = obj;
+    }
+    return index;
   }
 
   /**

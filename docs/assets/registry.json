@@ -3,16 +3,8 @@
     "name": "Models",
     "tags": []
   },
-  "llm": {
-    "name": "Language Models (LLM / SLM)",
-    "tags": ["models"]
-  },
-  "vlm": {
-    "name": "Vision / Language Models",
-    "tags": ["models"]
-  },
-  "container": {
-    "name": "Docker Container",
+  "env": {
+    "name": "environment",
     "tags": []
   },
   "property": {
@@ -27,21 +19,45 @@
     "name": "number",
     "tags": ["property"]
   },
-  "select": {
-    "name": "select",
+  "enum": {
+    "name": "enum",
     "tags": ["property"]
   },
   "string": {
     "name": "string",
     "tags": ["property"]
   },
+  "path": {
+    "name": "Path",
+    "tags": ["string"],
+    "help": "A local path on the server."
+  },
   "url": {
-    "name": "URL",
+    "name": "Path or URL",
+    "tags": ["string"],
+    "help": "URL of the model repo or local path on the server.\nIf needed, the model will be downloaded to the cache directory and quantized."
+  },
+  "passkey": {
+    "name": "Password, API Key, or Access Token",
     "tags": ["string"]
   },
+  "llm": {
+    "name": "Language Models (LLM / SLM)",
+    "tags": ["models"],
+    "hf_token": "MY HF TOKEN",
+    "max_batch_size": 1,
+    "max_context_len": null,
+    "prefill_chunk": null,
+    "cache": "~/.cache"
+  },
+  "vlm": {
+    "name": "Vision / Language Models",
+    "tags": ["models"]
+  },
   "api": {
-    "name": "API",
-    "tags": ["select"]
+    "name": "Runtime API",
+    "tags": ["enum"],
+    "help": "The runtime library or container to use for inferencing."
   },
   "mlc": {
     "name": "MLC",
@@ -49,7 +65,8 @@
   },
   "quantization": {
     "name": "Quantization",
-    "tags": ["select"]
+    "tags": ["enum"],
+    "help": "The type of quantization used."
   },
   "q4f16_ft": {
     "name": "q4f16_ft",
@@ -58,6 +75,59 @@
   "q4f16_1": {
     "name": "q4f16_1",
     "tags": ["quantization"]
+  },
+  "max_batch_size": {
+    "name": "Max Batch Size",
+    "tags": ["number"],
+    "help": "The maximum number of generation requests to handle in parallel at one time."
+  },
+  "max_context_len": {
+    "name": "Max Context Len",
+    "tags": ["number"],
+    "help": "The maximum number of tokens in the chat, including any system instruction, prompt, and reply. Reduce this from the model's default to decrease memory usage. This can be left unset and the model's default will be used."
+  },
+  "prefill_chunk": {
+    "name": "Prefill Chunk Len",
+    "tags": ["number"],
+    "help": "The maximum number of input tokens that can be prefilled into the KV cache at once. Longer prompts are prefilled in multiple batches.\nReduce this from the model's default to decrease memory usage."
+  },
+  "tensor_parallel": {
+    "name": "Tensor Parallel",
+    "tags": ["number"],
+    "help": "The number of GPUs to split the model across (for multi-GPU systems)"
+  },
+  "hf_token": {
+    "name": "HF Token",
+    "tags": ["passkey"],
+    "help": "Your $HF_TOKEN or API key used for access to gated models on HuggingFace Hub.\nThis is only needed if you are downloading a private model."
+  },
+  "container": {
+    "name": "Docker Container",
+    "tags": [],
+    "container_options": null,
+    "container_image": null,
+    "container_cmd": null,
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "container_image": {
+    "name": "Docker Image",
+    "tags": ["string"],
+    "help": "Specify the container image that will be run.\nOn Jetson, pick a tag that is compatible with your version of JetPack-L4T.\nThese are built from jetson-containers and are on DockerHub."
+  },
+  "container_options": {
+    "name": "Docker Options",
+    "tags": ["string"],
+    "help": "These are additional options that get passed to 'docker run' when starting the container.  These are the settings that come before the container image name, for example --volume ~/workspace:/workspace --env WORKSPACE=/workspace"
+  },
+  "container_cmd": {
+    "name": "Docker Run Cmd",
+    "tags": ["string"],
+    "help": "Override the default CMD that gets run when the container starts.\nFor example `python3 -c 'import torch; print(torch.cuda.is_available())'`"
+  },
+  "CUDA_VISIBLE_DEVICES": {
+    "name": "CUDA Device IDs",
+    "tags": ["string", "env"],
+    "help": "A comma-separated list of the GPU device indexes or UUIDs to enable.\nThis is the CUDA_VISIBLE_DEVICES environment variable and --gpus option in Docker.\nFor Jetson or other single-GPU systems, this should remain set to 0, which indicates the first detected GPU.\nClearing thie field with a blank input will result in container being run without CUDA enabled."
   },
   "jetson": {
     "name": "Jetson",
@@ -80,10 +150,12 @@
   },
   "llama": {
     "name": "Meta Llama",
-    "tags": ["llm"]
+    "tags": ["llm"],
+    "header": "llama-header"
   },
   "llama-3.2-8b": {
     "name": "Llama-3.2-8B",
+    "title": "Llama 3.2 8B",
     "tags": ["llama", "agx-orin", "orin-nx", "orin-nano"],
     "links": {
       "meta": {

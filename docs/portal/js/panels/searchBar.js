@@ -83,11 +83,12 @@ export class SearchBar {
       <div class="flex flex-column">
         <div class="flex flex-row">
           <style>
-            .select2-tree-option:before { content: "- "; }
+            .select2-tree-option-down:before { content: "⏷"; padding-right: 7px; }
+            .select2-tree-option-leaf:before { content: "–"; padding-right: 7px; }
     `;
 
     for( let i=1; i < 10; i++ ) {
-      html += `.select2-tree-depth-${i} { padding-left: ${i}em; } \n`
+      html += `.select2-tree-depth-${i} { padding-left: ${i*20}px; } \n`
     }
     
     html += `
@@ -97,7 +98,7 @@ export class SearchBar {
 
     html += this.db.treeReduce(
       ({db, key, data, depth}) => {
-      return `<option class="select2-tree-option select2-tree-depth-${depth}" 
+      return `<option class="select2-tree-option-${(this.db.children[key].length > 0) ? 'down' : 'leaf'} select2-tree-depth-${depth}" 
         ${self.tags.includes(key) ? "selected" : ""} 
         value="${key}">${db.index[key].name}</option>`
         + data;
@@ -193,6 +194,28 @@ export class SearchBar {
 
     html += `</div>`;
 
+    html += `
+      <div class="code-container" id="${this.id}-code-container">
+        <div class="flex flex-row">
+          <div class="btn-group">
+            <input type="radio" id="toggle-on" name="toggle" checked>
+<label for="toggle-on">docker run</label>
+<input type="radio" id="toggle-off" name="toggle">
+<label for="toggle-off">docker compose</label>
+<input type="radio" id="toggle-three" name="toggle">
+<label for="toggle-three">Benchmarks</label>
+          </div>
+
+          <div class="btn-copy" id="${this.id}-btn-copy">
+            <i class="bi bi-copy" title="Copy to clipboard"></i>
+          </div>
+        </div>
+        <div class="code-block">
+          abc123
+        </div>
+      </div>
+      
+    `;
     card_container.html(html);
 
     $('.btn-open-item').on('click', (evt) => {

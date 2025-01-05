@@ -1,17 +1,14 @@
 <!-- Custom HTML site displayed as the Home chapter -->
 {% extends "main.html" %}
 {% block extrahead %}
+  {{ super() }}
+
   <style>
     body {
       background-color: #efefef;
     }
-
-    /* slider */
-    .form-range::-webkit-slider-runnable-track {
-      background-color: #666666;
-    }
   </style>
-  
+
   <script type="module">
     import { GraphTags, SearchBar } from '/portal/nanolab.js';
 
@@ -22,25 +19,22 @@
         var searchBar = new SearchBar({
           db: db,
           tags: ['models'],
-          parent: 'nanolab_container'
+          parent: '.root-container'
         });
         console.log("Window done loading");
       });
     };
   </script>
-
-  {{ super() }}
-
+  
 {% endblock %}
 {% block tabs %}
 {{ super() }}
-
 {% endblock %}
 {% block content %}
 
-<div id="nanolab_container" class="container flex-column">
-
-</div>
+  <div class="root-container flex-column" data-style-theme="nv-green">
+    <!-- dynamic content gets inserted here -->
+  </div>
 
 {% endblock %}
 {% block footer %}

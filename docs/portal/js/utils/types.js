@@ -5,6 +5,23 @@ export function exists(x) {
   return (x !== null && x !== undefined);
 }
 
+export function len(x) {
+  if( !exists(x) )
+    return 0;
+  if( is_list(x) )
+    return x.length;
+  else
+    return Object.keys(x).length;
+}
+
+export function nonempty(x) {
+  return len(x) > 0;
+}
+
+export function is_empty(x) {
+  return !nonempty(x);
+}
+
 export function is_string(x) {
   if( typeof x === 'string' || x instanceof String )
     return true;
@@ -27,14 +44,7 @@ export function as_element(x) {
     return x;
 
   if( is_string(x) )
-    return document.getElementById(x);
+    return document.querySelector(x); /*document.getElementById(x);*/
 
   return x;
-}
-
-export function len(x) {
-  if( is_list(x) )
-    return x.length;
-  else
-    return Object.keys(x).length;
 }

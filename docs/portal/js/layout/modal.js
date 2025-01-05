@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { 
-  htmlToNode, exists
+  htmlToNode, exists, as_element
 } from '../nanolab.js';
 
 /*
@@ -8,31 +8,36 @@ import {
  */
 export class ModalDialog {
   
-  constructor({id, title, body}) {
+  constructor({id, title, body, header='', menu='', classes=''}) {
     this.id = id;
     let html = `
-      <div class="modal" id="${id}" >
-        <div class="modal-content">
-          <div class="modal-header">
-            <span class="modal-close">&times;</span>
-            <span class="modal-title">${title}</span>
+      <div class="modal" id="${id}">
+        <div class="modal-content" id="${id}-content">
+          <div class="modal-header ${classes}" id="${id}-header">
+            <div class="modal-title-bar" id="${id}-title-bar">
+              <span class="modal-close">&times;</span>
+              <span class="modal-title">${title}</span>
+              ${menu}
+            </div>
+            ${header}
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="${id}-body">
           </div>
         </div>
       </div>`;
 
     /*<div class="modal-footer">Footer</div>*/
 
-    this.node = htmlToNode(html.trim()); //document.getElementById(id);
+    this.node = htmlToNode(html);
     this.body = this.node.getElementsByClassName("modal-body")[0];
 
     if( exists(body) ) {
       this.body.appendChild(htmlToNode(body.trim()));
     }
 
-    document.getElementById('nanolab_container').insertAdjacentElement("afterend", this.node);
-    //document.body.appendChild(this.node); //prepend(this.node);
+    as_element('.root-container').appendChild(this.node);
+    //as_element('.root-container').insertAdjacentElement("afterend", this.node);
+    //document.body.insertBefore(this.node, document.body.firstChild);
     
     const close_btn = this.node.getElementsByClassName("modal-close")[0];
     close_btn.addEventListener('click', () => {this.remove();} );
