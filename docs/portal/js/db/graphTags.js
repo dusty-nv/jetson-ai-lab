@@ -290,7 +290,7 @@ export class GraphTags {
 
       if( !(key in this.index) ) {
         console.warn(`missing tag '${key}' from index`);
-        return tags;
+        return output;
       }
 
       for( let var_key in this.index[key] ) {

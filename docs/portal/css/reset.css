@@ -1,24 +1,29 @@
-/*
+/**
  * These are some experiments from trying to reset the CSS from mkdocs-material.
  * Shadow DOM is the recommended way to implement CSS scoping and isolation:
  * https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM
  */
-/*<div id="host">
+
+/*
+<div id="host">
   <template shadowrootmode="open">
     <style>
       :host { all: initial }
     </style>
     <span>I'm in the shadow DOM</span>
   </template>
-</div>*/
+</div>
+*/
 
-/*
+
+/**
  * Could not get these methods using css unset/revert to only be scoped to the desired content,
  * while still removing deep/persistent styles from mkdocs, which are set .md-typeface subclass
  *
  * https://stackoverflow.com/questions/15901030/how-to-reset-remove-css-styles-for-a-specific-element-or-selector-only
  * https://stackoverflow.com/questions/58691846/whats-the-difference-between-all-unset-and-all-revert
  */
+
 /*:root { all: unset; }*/
 /*.md-typeset { all: unset; }*/
 /*.md-typeset *:where(:not(html, iframe, canvas, img, svg, video, audio, style, script):not(svg *, symbol *)) { all: unset; }*/
@@ -32,7 +37,7 @@
     - The "symbol *" part is to solve Firefox SVG sprite bug
     - The "html" element is excluded, otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
  */
- *:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
   all: unset;
   display: revert;
 }

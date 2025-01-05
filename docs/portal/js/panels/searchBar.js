@@ -194,16 +194,16 @@ export class SearchBar {
 
     html += `</div>`;
 
-    html += `
+    /*html += `
       <div class="code-container" id="${this.id}-code-container">
         <div class="flex flex-row">
           <div class="btn-group">
             <input type="radio" id="toggle-on" name="toggle" checked>
-<label for="toggle-on">docker run</label>
-<input type="radio" id="toggle-off" name="toggle">
-<label for="toggle-off">docker compose</label>
-<input type="radio" id="toggle-three" name="toggle">
-<label for="toggle-three">Benchmarks</label>
+            <label for="toggle-on">docker run</label>
+            <input type="radio" id="toggle-off" name="toggle">
+            <label for="toggle-off">docker compose</label>
+            <input type="radio" id="toggle-three" name="toggle">
+            <label for="toggle-three">Benchmarks</label>
           </div>
 
           <div class="btn-copy" id="${this.id}-btn-copy">
@@ -213,9 +213,8 @@ export class SearchBar {
         <div class="code-block">
           abc123
         </div>
-      </div>
-      
-    `;
+      </div>`;*/
+
     card_container.html(html);
 
     $('.btn-open-item').on('click', (evt) => {

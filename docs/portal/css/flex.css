@@ -1,3 +1,8 @@
+/*
+ * Flexbox grid layouts
+ * https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+ */
+
 /*.root-container * {
   all: initial;
   font-family: var(--theme-text-font);
@@ -22,9 +27,24 @@
   flex-direction: row;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+.no-wrap {
+  flex-wrap: nowrap;
+}
+
+.no-shrink {
+  flex-shrink: 0;
+}
+
 .fill-space {
     flex: 1;
-    /*background-color: lightblue;*/
 }
 
 .align-top {

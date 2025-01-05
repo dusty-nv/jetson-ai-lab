@@ -6,7 +6,7 @@
   /*display: none;  Hidden by default */
   position: fixed;    /* Stay in place */
   z-index: 999;       /* Sit on top */
-  padding-top: 140px; /* Location of the box */
+  padding-top: 120px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%;        /* Full width */
@@ -71,7 +71,7 @@
   border-bottom: 2px solid rgba(165,165,165);
 }
 
-/* Styling applied to user elements added to header */
+/* Extensions for user elements in header */
 .modal-header-extensions select {
   font-size: 14px;
   font-weight: 500;
@@ -97,22 +97,6 @@
     margin-top: 25px;
   }
 }*/
-
-/* .modal-header-extensions */
-.llama-header {
-  background-image: /*linear-gradient(270deg, 
-                      rgba(63, 82, 166, 0) 32%, 
-                      rgba(63, 82, 166, 1.0) 49%, 
-                      hsla(96, 29%, 40%, 1.0) 100%), */
-                      linear-gradient(270deg, rgba(63, 82, 166, 0) 32%, rgb(66, 122, 156) 49%, hsl(95.3, 21.2%, 47.3%) 100%),
-                    /*linear-gradient(90deg, rgba(205,205,205,0) 48%, rgba(205,205,205,1) 49%, rgba(205,205,205,0) 65%),*/
-                    url('/images/portal/llama-pilot-title.jpg'); 
-  background-size: 100%, 50%; 
-  background-repeat: no-repeat, no-repeat; 
-  background-position-x: 0px, right; 
-  background-position-y: 0px, -25px;
-  height: 160px;
-}
 
 /* make the dialog body partially transparent */
 .modal-body {

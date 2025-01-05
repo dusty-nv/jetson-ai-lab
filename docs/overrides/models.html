@@ -12,7 +12,7 @@
   <script type="module">
     import { GraphTags, SearchBar } from '/portal/nanolab.js';
 
-    const GRAPH_TAGS = '/assets/registry.json';
+    const GRAPH_TAGS = '/portal/data/registry.json';
 
     window.onload = () => {
       GraphTags.load(GRAPH_TAGS).then(db => {
@@ -28,7 +28,7 @@
   
 {% endblock %}
 {% block tabs %}
-{{ super() }}
+{{ super() }}s
 {% endblock %}
 {% block content %}
 

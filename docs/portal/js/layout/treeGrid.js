@@ -23,7 +23,7 @@ export function TreeGridHeader(x) {
   return `
     <div>
       <h1>${x.name}</h1>
-      <div class="flex flex-row">
+      <div class="flex flex-row flex-wrap">
         ${x.data}
       </div>
     </div>`;
