@@ -33,9 +33,10 @@ export class PropertyEditor {
 
     console.log(`[PropertyEditor] creating new property editor (ID='${this.id}) with children IDs:`, this.ids);
 
+    // get flattened objects and headers (optional)
     const obj = this.db.flat[this.key];
 
-    this.header_class = obj.header; // extended headers
+    this.header_class = obj.header;
     this.has_header = exists(this.header_class);
     this.children = this.db.children[this.key];
 
@@ -50,8 +51,8 @@ export class PropertyEditor {
     if( this.children.length > 0 ) {
       //menu += `<label for="${this.id}-preset-select" style="margin-right: 5px;">Preset</label>`;
       menu += `
-        <select id="${this.ids.preset_menu}" class="property-presets monospace" 
-          ${this.has_header ? 'style="font-size: 13px; font-weight: 500; letter-spacing: 0.3px"' : 
+        <select id="${this.ids.preset_menu}" class="property-presets" 
+          ${this.has_header ? 'style="font-size: 14px; font-weight: 600; letter-spacing: 0.5px"' : 
                               'style="margin-right: 10px; width: 100%;"'}
         >`;
 
@@ -168,7 +169,7 @@ export class PropertyEditor {
     html += `
         </table>
       </div>
-      <div id="${this.ids.code_panel}" style="flex: 1 1 0px; margin-left: 10px; max-height: 400px; max-width: 50%;">
+      <div id="${this.ids.code_panel}" style="margin-left: 10px; height: 400px; width: 500px;"> <!-- flex: 1 1 0px; max-height: 400px; -->
       </div>
     </div>`;
 

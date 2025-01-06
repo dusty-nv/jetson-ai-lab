@@ -41,7 +41,7 @@ export class ToggleSwitch {
    */
   html() {
     const title = exists(this.help) ? `title="${this.help}"` : '';
-    let html = `<div id="${this.id}" style="margin-left: 10px;" ${title}>`;
+    let html = `<div id="${this.id}" class="toggle-btn-container" ${title}>`;
     for( const idx in this.states ) {
       const state = this.states[idx];
       const classes = this.classes[idx].join(' ');

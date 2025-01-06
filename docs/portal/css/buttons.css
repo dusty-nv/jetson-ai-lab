@@ -203,6 +203,11 @@
   /*transition: background 600ms ease, color 600ms ease;*/
 }
 
+.toggle-btn-container {
+  min-width: 100px;
+  margin-left: 10px;
+}
+
 input[type="radio"].toggle {
   display: none;
   & + label{

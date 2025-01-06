@@ -95,7 +95,7 @@ export function PropertyField({
 
     html += `
       <input id="${id}" class="property-field" type="${type}" 
-        ${(type === 'text') ? 'style="width: 100%"' : ''} 
+        ${(type === 'text' || type === 'path') ? 'style="width: 100%"' : ''} 
         ${value_html} ${data}>`;
   }
 
