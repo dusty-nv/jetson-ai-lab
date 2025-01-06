@@ -35,7 +35,7 @@
   "url": {
     "name": "Path or URL",
     "tags": ["string"],
-    "help": "URL of the model repo or local path on the server.\nIf needed, the model will be downloaded to the cache directory and quantized."
+    "help": "URL of the model repo or local path on the server.\nIf needed, the model will be downloaded to the cache directory and quantized.\nThis location may also refer to model weights that have already been quantized."
   },
   "passkey": {
     "name": "Password, API Key, or Access Token",

@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 import { 
-  PropertyField, PropertyLabel, ModalDialog, 
-  escapeHTML, exists, nonempty, sleep,
+  PropertyField, PropertyLabel, ModalDialog, CodeEditor,
+  ConfigGenerator, escapeHTML, exists, nonempty, sleep,
 } from '../nanolab.js';
 
-import '../../dist/composerize/composerize.js';
-import '../../dist/prism/prism.js';
 
 /*
  * Introspective panel for displaying and editing graph node properties.
@@ -23,9 +21,17 @@ export class PropertyEditor {
     this.id = id ?? `${key}-property-editor`;
     this.key = key;
     this.key_org = key;
- 
+
     if( !(this.key in this.db.index) )
-      throw new Error(`could not find '${this.key}' trying to open model setup`);
+      throw new Error(`could not find '${this.key}' trying to open property editor`);
+
+    // generate children ID's from parent ID
+    this.ids = {};
+
+    for( const k of ['container', 'header-extensions', 'preset-menu', 'dialog', 'table', 'code_panel', 'code_editor'])
+      this.ids[k.replace('-','_')] = `${this.id}-${k}`;
+
+    console.log(`[PropertyEditor] creating new property editor (ID='${this.id}) with children IDs:`, this.ids);
 
     const obj = this.db.flat[this.key];
 
@@ -36,16 +42,17 @@ export class PropertyEditor {
     // create dialog and placeholder for dynamic content
     console.log(`[Property Editor] Opening settings for '${this.key}'`);
 
-    let html = `<div id="${this.id}-container" class="flex flex-row" style="width: 100%;">`;
-    let header = `<div id="${this.id}-header-extensions" style="width: 45%;"></div>`;
+    let html = `<div id="${this.ids.container}" class="flex flex-row" style="width: 100%;">`;
+    let header = `<div id="${this.ids.header_extensions}" style="width: 45%;"></div>`;
     let menu = ``;
 
     // presets menu (if this resource has children)
     if( this.children.length > 0 ) {
       //menu += `<label for="${this.id}-preset-select" style="margin-right: 5px;">Preset</label>`;
       menu += `
-        <select id="${this.id}-preset-menu" class="property-presets" 
-          ${this.has_header ? '' : 'style="margin-right: 10px; width: 100%;"'}
+        <select id="${this.ids.preset_menu}" class="property-presets monospace" 
+          ${this.has_header ? 'style="font-size: 13px; font-weight: 500; letter-spacing: 0.3px"' : 
+                              'style="margin-right: 10px; width: 100%;"'}
         >`;
 
       for( const child_key of this.children )
@@ -56,7 +63,7 @@ export class PropertyEditor {
 
     // create dialog
     this.dialog = new ModalDialog({
-      id: `${this.id}-dialog`, 
+      id: this.ids.dialog, 
       title: exists(obj.title) ? obj.title : obj.name, 
       body: html,
       menu: menu,
@@ -67,7 +74,7 @@ export class PropertyEditor {
     // select from child instances
     if( this.children.length > 0 ) {
       this.key = this.children[0];
-      document.getElementById(`${this.id}-preset-menu`).addEventListener('change', (evt) => {
+      document.getElementById(this.ids.preset_menu).addEventListener('change', (evt) => {
         console.log(`[Property Editor] Changing to preset ${evt.target.value}`, evt, this);
         this.key = evt.target.value;
         this.refresh();
@@ -77,10 +84,14 @@ export class PropertyEditor {
     // generate html
     this.refresh();
 
-    sleep(100); // FIXME (flashing header image during load)
+    //sleep(100); // FIXME (flashing header image during load)
+    //const self = this;
+    //setTimeout(() => {self.dialog.show();}, 1000);
 
-    if( show ?? true )
+    // it would seem it automatically shows by default
+    /*if( show ?? true ) {
       this.dialog.show();
+    } */
   }
 
   /*
@@ -98,7 +109,7 @@ export class PropertyEditor {
  
     console.log(`[Property Editor] Refreshing configuration:\n  key=${key}\n  fields=${fields}`);
 
-    let html = `<div class="flex flex-row" style="flex-grow: 1;"><div style="flex-grow: 1;">`;
+    let html = `<div class="flex flex-row" style="flex-grow: 1;"><div style="flex: 1 1 0px;">`;
     let menu = ``;
     let header = ``;
     
@@ -106,7 +117,7 @@ export class PropertyEditor {
       html += `<img src="${obj.thumbnail}" style="max-width: 300px; max-height: 150px">`; // when styled from CSS, gets overriden by .md-typeset
     }*/
 
-    html += `<table id="${this.id}-table" class="property-table">`;
+    html += `<table id="${this.ids.table}" class="property-table">`;
 
     // tags / links
     if( nonempty(obj.links) ) {
@@ -140,56 +151,50 @@ export class PropertyEditor {
       html += `<tr><td style="white-space: nowrap;">${PropertyLabel(args)}</td><td style="width: 99%;">${PropertyField(args)}</td></tr>`;
     }
 
-    this.cmd = composerize('docker run -it --rm ubuntu:latest', null, 'latest', 2);
-    this.cmd = this.cmd.substring(this.cmd.indexOf("\n") + 1);
+    header += `
+      <table class="tag-oval monospace" style="min-width: 255px; border: 1px solid rgba(255,255,255,0.1);" title="This table shows the decode tokens/second during inference.\nThe GPU memory usage is an estimate as reported by the inference API.">
+        <tr>
+          <td align="center"><b>AGX Orin</b></td>
+          <td align="center"><b>Nano Super</b></td>
+          <td align="center"><b>Memory</b></td>
+        </tr>
+        <tr>
+          <td align="center">32.1 t/s</td>
+          <td align="center">19.2 t/s</td>
+          <td align="center">3264 MB</td>
+        </tr>
+      </table>`;
 
-    const codeToggleName=`${this.id}-code-toggle`;
-
-    // dynamic header & main panel
     html += `
         </table>
       </div>
-      <div id="${this.id}-launch-panel" style="flex-grow: 1; margin-left: 10px;">
-        <div class="full-height">
-          <div id="${this.id}-code-tabs" class="btn-group">` +
-            `<input type="radio" id="${codeToggleName}-run" name="${codeToggleName}" checked>` + 
-            `<label for="${codeToggleName}-run">docker run</label>` +
-            `<input type="radio" id="${codeToggleName}-compose" name="${codeToggleName}">` +
-            `<label for="${codeToggleName}-compose">docker compose</label>` +
-            `<input type="radio" id="${codeToggleName}-python" name="${codeToggleName}">` +
-            `<label for="${codeToggleName}-python">python</label>` +
-            `<input type="radio" id="${codeToggleName}-js" name="${codeToggleName}">` +
-            `<label for="${codeToggleName}-js">javascript</label>` +
-          `</div>
-          <div class="code-container full-height" id="${this.id}-code-container">
-            <pre><i id="${this.id}-btn-copy" class="bi bi-copy btn-copy" title="Copy code to clipboard"></i><code class="language-yaml">${this.cmd}</code></pre>
-          </div>
-        </div>
+      <div id="${this.ids.code_panel}" style="flex: 1 1 0px; margin-left: 10px; max-height: 400px; max-width: 50%;">
       </div>
     </div>`;
 
-    let panel = document.getElementById(`${this.id}-container`);
+    let panel = document.getElementById(this.ids.container);
     panel.innerHTML = html;
 
+    // add header graphics
     if( this.has_header )
-      document.getElementById(`${this.id}-header-extensions`).innerHTML = header;
+      document.getElementById(this.ids.header_extensions).innerHTML = header;
 
-    document.getElementById(`${this.id}-btn-copy`).addEventListener('click', (evt) => {
-      console.log(`[Property Editor] Copying text from code block to clipboard`);
-      navigator.clipboard.writeText(this.cmd);
+    // create code panel
+    this.codeEditor = new CodeEditor({
+      id: this.ids.code_editor,
+      parent: document.getElementById(this.ids.code_panel)
     });
 
-    Prism.highlightAllUnder(document.getElementById(`${this.id}-code-container`));
+    this.updateCode();
 
+    // bind handlers to update the property values
     for( let control of panel.getElementsByClassName("property-field") ) {
       const event_key = control.dataset.key;
-
       control.addEventListener('change', this.setProperty.bind(this));
       control.addEventListener('keydown', (evt) => {
         console.log(`[Property Editor] Value of ${event_key} (id=${control.id}) changed to '${control.value}'`);
-        if( event_key == 'url' ) {
+        if( event_key == 'url' )
           self.updateURL({id: evt.target.id, url: evt.target.value});
-        }
       });
 
       if( event_key == 'url' )
@@ -204,6 +209,7 @@ export class PropertyEditor {
     if( event_key == 'url' ) {
       panel.getElementById(`${id}-link`).href = control.value;
     }
+    this.updateCode();
   }
 
   updateURL({id,url}) {
@@ -214,5 +220,10 @@ export class PropertyEditor {
     link.href = url;
     link.title = url;
     console.log(`[Property Editor] Updated link (${id}) to ${url}`);
+    //this.updateCode();
+  }
+
+  updateCode() {
+    this.codeEditor.refresh(ConfigGenerator({db: this.db, key: this.key}));
   }
 }

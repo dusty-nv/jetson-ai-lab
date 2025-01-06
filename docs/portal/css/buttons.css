@@ -74,7 +74,7 @@
   margin-right: 4px;
   color: rgb(235,235,235);
   background-color: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 10px;
   text-decoration: none;
   transition: none;
@@ -83,13 +83,31 @@
 .btn-oval:hover, a.btn-oval:hover, a.btn-oval:active, a.btn-oval:focus {
   color: rgb(255,255,255);
   /*font-weight: 500;*/
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
   text-decoration-color: rgb(255,255,255);
   text-decoration-thickness: 1px;
   transition: none;
 }
 
 /* Non-link buttons (these show pinned content) */
+.tag-oval {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(235,235,235, 0.75);
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: none;
+  margin: 15px 0px 15px 10px;
+}
+
+.tag-oval:hover {
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
 .pin-green {
   color: #dddddd;
   background-color: var(--theme-primary);

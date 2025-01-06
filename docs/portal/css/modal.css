@@ -13,7 +13,7 @@
   height: 100%;       /* Full height */
   overflow: auto;     /* Enable scroll if needed */
   background-color: rgb(0,0,0);    /* Fallback color */
-  background-color: rgba(0,0,0,0); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
 }
   
 .modal-content {
@@ -80,14 +80,14 @@
   color: rgb(235,235,235);
   text-shadow: rgba(50,50,50,0.35) 3px 0 3px;
   background-color: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 10px;
   transition: none;
 }
 
 .modal-header-extensions select:hover {
   background-color: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.5);
 }
 
 /*.modal-header-extensions div {

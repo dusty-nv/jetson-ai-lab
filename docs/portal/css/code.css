@@ -4,7 +4,7 @@
   color: rgba(255,255,255,0.95);
   background: var(--theme-gray-dark);
   /*background: linear-gradient(165deg, rgb(0,0,0,0.475) 0%, rgb(0,0,0,0.55) 100%);*/
-  padding: 40px 15px 15px 15px;
+  padding: 40px 10px 15px 10px;
   font-size: 85%;
 }
 

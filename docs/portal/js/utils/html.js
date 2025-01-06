@@ -44,15 +44,15 @@ export function htmlToNode(html, parent=null) {
  * @return {NodeList} List of Nodes that were created from the HTML string.
  */
 export function htmlToNodes(html, parent=null) {
-  console.group('htmlToNodes');
-  console.log('HTML\n', html);
+  /*console.group('htmlToNodes');
+  console.log('HTML\n', html);*/
 
   const template = document.createElement('template');
   template.innerHTML = html.trim();
 
-  console.log('Nodes', template.content.childNodes);
+  /*console.log('Nodes', template.content.childNodes);
   console.log('Parent', parent);
-  console.groupEnd();
+  console.groupEnd();*/
 
   // was having issues loading jQuery from modules and resolving exports
   // but this was a good thread:  https://stackoverflow.com/a/36343307
