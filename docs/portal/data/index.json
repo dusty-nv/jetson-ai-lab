@@ -1,0 +1,458 @@
+{
+  "api": {
+    "name": "Runtime API",
+    "tags": [
+      "enum"
+    ],
+    "help": "The runtime library or container to use for inferencing."
+  },
+  "transformers": {
+    "name": "Hugging Face Transformers",
+    "tags": [
+      "api"
+    ]
+  },
+  "mlc": {
+    "name": "MLC",
+    "tags": [
+      "api"
+    ]
+  },
+  "trt_llm": {
+    "name": "TensorRT-LLM",
+    "tags": [
+      "api"
+    ]
+  },
+  "vllm": {
+    "name": "vLLM",
+    "tags": [
+      "api"
+    ]
+  },
+  "llama_cpp": {
+    "name": "llama.cpp",
+    "tags": [
+      "api"
+    ]
+  },
+  "ollama": {
+    "name": "ollama",
+    "tags": [
+      "api"
+    ]
+  },
+  "tokens_per_second": {
+    "name": "tokens per second",
+    "units": "tokens/sec",
+    "units_short": "t/s",
+    "tags": [
+      "number"
+    ]
+  },
+  "decode": {
+    "name": "Decode Generation Rate",
+    "tags": [
+      "tokens_per_second"
+    ]
+  },
+  "prefill": {
+    "name": "Context Prefill Rate",
+    "tags": [
+      "tokens_per_second"
+    ]
+  },
+  "memory": {
+    "name": "Memory",
+    "units": "MB",
+    "tags": [
+      "number"
+    ]
+  },
+  "models": {
+    "name": "Models",
+    "tags": []
+  },
+  "llm": {
+    "name": "Language Models (LLM / SLM)",
+    "tags": [
+      "models"
+    ],
+    "max_batch_size": 1,
+    "max_context_len": null,
+    "prefill_chunk": null,
+    "hf_token": null,
+    "cache_dir": "~/.cache",
+    "property_order": [
+      "url",
+      "container_image",
+      "quantization",
+      "max_batch_size"
+    ]
+  },
+  "vlm": {
+    "name": "Vision / Language Models",
+    "tags": [
+      "models"
+    ]
+  },
+  "max_batch_size": {
+    "name": "Max Batch Size",
+    "tags": [
+      "number"
+    ],
+    "help": "The maximum number of generation requests to handle in parallel at one time."
+  },
+  "max_context_len": {
+    "name": "Max Context Len",
+    "tags": [
+      "number"
+    ],
+    "help": "The maximum number of tokens in the chat history, including any system instruction, prompt, and future reply. Reduce this from the model's default to decrease memory usage. This can be left unset, and the model's default will be used."
+  },
+  "prefill_chunk": {
+    "name": "Prefill Chunk Len",
+    "tags": [
+      "number"
+    ],
+    "help": "The maximum number of input tokens that can be prefilled into the KV cache at once. Longer prompts are prefilled in multiple batches.\nReduce this from the model's default to decrease memory usage."
+  },
+  "tensor_parallel": {
+    "name": "Tensor Parallel",
+    "tags": [
+      "number"
+    ],
+    "help": "The number of GPUs to split the model across (for multi-GPU systems)"
+  },
+  "cache_dir": {
+    "name": "Cache Dir",
+    "tags": [
+      "path"
+    ],
+    "help": "Path on the server's native filesystem that will be mounted into the container\nfor saving the models.\nIt is recommended this be relocated to NVME storage."
+  },
+  "quantization": {
+    "name": "Quantization API",
+    "tags": [
+      "enum"
+    ],
+    "help": "The type of quantization used."
+  },
+  "fp16": {
+    "name": "fp16 (HF Transformers)",
+    "tags": [
+      "quantization",
+      "transformers"
+    ]
+  },
+  "q4f16_ft": {
+    "name": "q4f16_ft (MLC)",
+    "tags": [
+      "quantization",
+      "mlc"
+    ]
+  },
+  "q4f16_1": {
+    "name": "q4f16_1 (MLC)",
+    "tags": [
+      "quantization",
+      "mlc"
+    ]
+  },
+  "jetson": {
+    "name": "Jetson",
+    "tags": []
+  },
+  "orin-nano": {
+    "name": "Orin Nano",
+    "tags": [
+      "jetson"
+    ],
+    "pin": true
+  },
+  "orin-nx": {
+    "name": "Orin NX",
+    "tags": [
+      "jetson"
+    ],
+    "pin": true
+  },
+  "agx-orin": {
+    "name": "AGX Orin",
+    "tags": [
+      "jetson"
+    ],
+    "pin": true
+  },
+  "property": {
+    "name": "property",
+    "tags": []
+  },
+  "bool": {
+    "name": "bool",
+    "tags": [
+      "property"
+    ]
+  },
+  "number": {
+    "name": "number",
+    "tags": [
+      "property"
+    ]
+  },
+  "enum": {
+    "name": "enum",
+    "tags": [
+      "property"
+    ]
+  },
+  "string": {
+    "name": "string",
+    "tags": [
+      "property"
+    ]
+  },
+  "path": {
+    "name": "Path",
+    "tags": [
+      "string"
+    ],
+    "help": "A local path on the server."
+  },
+  "url": {
+    "name": "Path or URL",
+    "tags": [
+      "string"
+    ],
+    "help": "URL of the model repo or local path on the server.\nIf needed, the model will be downloaded to the cache directory and quantized.\nThis location may also refer to model weights that have already been quantized."
+  },
+  "passkey": {
+    "name": "Password, API Key, or Access Token",
+    "tags": [
+      "string"
+    ]
+  },
+  "l4t": {
+    "name": "Linux4Tegra (JetPack)",
+    "tags": [
+      "amd64"
+    ]
+  },
+  "l4t-r35": {
+    "name": "JetPack 5.1 (L4T R35)",
+    "tags": [
+      "l4t",
+      "ubuntu-20.04",
+      "agx-orin",
+      "orin-nx"
+    ]
+  },
+  "l4t-r36": {
+    "name": "JetPack 6.1 (L4T R36)",
+    "tags": [
+      "l4t",
+      "ubuntu-22.04",
+      "agx-orin",
+      "orin-nx"
+    ]
+  },
+  "ubuntu": {
+    "name": "Ubuntu",
+    "tags": []
+  },
+  "ubuntu-20.04": {
+    "name": "Ubuntu 20.04",
+    "tags": [
+      "ubuntu"
+    ]
+  },
+  "ubuntu-22.04": {
+    "name": "Ubuntu 22.04",
+    "tags": [
+      "ubuntu"
+    ]
+  },
+  "ubuntu-24.04": {
+    "name": "Ubuntu 24.04",
+    "tags": [
+      "ubuntu"
+    ]
+  },
+  "env": {
+    "name": "environment",
+    "tags": []
+  },
+  "hf_token": {
+    "name": "HF Token",
+    "tags": [
+      "passkey"
+    ],
+    "placeholder": [
+      "HuggingFace API key for gated model access"
+    ],
+    "help": "Your $HF_TOKEN or API key used for access to gated models on HuggingFace Hub.\nThis is only needed if you are downloading a private model or under access control.\nFor example, original 16-bit Llama weights. Quants do not typically need login."
+  },
+  "CUDA_VISIBLE_DEVICES": {
+    "name": "CUDA Devices",
+    "tags": [
+      "string",
+      "env"
+    ],
+    "help": "A comma-separated list of the GPU device indexes or UUIDs to enable.\nThis is the CUDA_VISIBLE_DEVICES environment variable and --gpus option in Docker.\nFor Jetson or other single-GPU systems, this should remain set to 0, which indicates the first detected GPU.\nClearing thie field with a blank input will result in container being run without CUDA enabled."
+  },
+  "arm64": {
+    "name": "ARM64 (Jetson)",
+    "tags": []
+  },
+  "amd64": {
+    "name": "AMD64 (x86_64 + CUDA dGPU)",
+    "tags": []
+  },
+  "llama_cpp:r35": {
+    "name": "dustynv/llama_cpp:0.3.5-r35.4.1",
+    "tags": [
+      "container",
+      "llama_cpp",
+      "l4t-r35"
+    ]
+  },
+  "llama_cpp:r36": {
+    "name": "dustynv/llama_cpp:0.3.5-r36.4.0",
+    "tags": [
+      "container",
+      "llama_cpp",
+      "l4t-r36"
+    ]
+  },
+  "container": {
+    "name": "Docker Container",
+    "tags": [],
+    "container_options": null,
+    "container_image": null,
+    "container_cmd": null,
+    "CUDA_VISIBLE_DEVICES": "all"
+  },
+  "container_image": {
+    "name": "Container Image",
+    "tags": [
+      "string"
+    ],
+    "help": "Specify the container image to run and launch the server.\nOn Jetson, pick a tag that is compatible with your version of JetPack.\nFor example, L4T r36.4.0 images are compatible with JetPack 6.1 and 6.2.\nThese are built from jetson-containers with CUDA and are on DockerHub."
+  },
+  "container_options": {
+    "name": "Docker Options",
+    "tags": [
+      "string"
+    ],
+    "help": "These are extra prefix flags that get passed to 'docker run' when starting the container.  These are the arguments that come before the container image name, for example --volume ~/workspace:/workspace --env WORKSPACE=/workspace"
+  },
+  "container_cmd": {
+    "name": "Docker Run Cmd",
+    "tags": [
+      "string"
+    ],
+    "help": "Template that builds the 'docker run' command from $OPTIONS $IMAGE $ARGS\nYou can change the startup command or arguments with this."
+  },
+  "server_host": {
+    "name": "Server IP / Port",
+    "tags": [
+      "string"
+    ],
+    "help": "The server's hostname/IP and port that it is listening on for incoming requests.\n0.0.0.0 will listen on all network interfaces (127.0.0.1 from localhost only)\nThis IP address also gets populated in the examples, so set it to your device."
+  },
+  "mlc:r36": {
+    "name": "dustynv/mlc:0.19.0-r36.4.0",
+    "container_image": "dustynv/mlc:0.19.0-r36.4.0",
+    "container_cmd": "$OPTIONS $IMAGE sudonim $ARGS",
+    "container_options": "-it --rm",
+    "server_host": "0.0.0.0:9000",
+    "tags": [
+      "container",
+      "mlc",
+      "l4t-r36"
+    ]
+  },
+  "llama-3.2-1b": {
+    "name": "Llama 3.2 1B",
+    "title": "Llama 3.2 1B",
+    "header": "llama-goggles-header",
+    "tags": [
+      "llama-3",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ],
+    "max_context_len": {
+      "placeholder": 131072
+    },
+    "prefill_chunk": {
+      "placeholder": 8192
+    },
+    "links": {
+      "meta": {
+        "name": "Meta",
+        "url": "https://www.llama.com/",
+        "color": "blue"
+      },
+      "hf": {
+        "name": "Hugging Face",
+        "url": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct",
+        "color": "yellow"
+      }
+    }
+  },
+  "llama-3.2-1b-q4f16_ft-mlc": {
+    "name": "meta-llama/llama-3.2-1b-instruct-q4f16_ft",
+    "title": "Llama-3.2-1B \u276f MLC q4f16_ft \u276f JetPack 6.1+",
+    "url": "hf.co/dusty-nv/Llama-3.2-1B-Instruct-q4f16_ft-MLC",
+    "quantization": "q4f16_ft",
+    "tags": [
+      "llama-3.2-1b",
+      "mlc:r36",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ],
+    "stats": {
+      "agx-orin": {
+        "decode": 146.1,
+        "prefill": 1046.1
+      },
+      "orin-nano": {
+        "decode": 46.1,
+        "prefill": 146.1
+      },
+      "memory": 891.2
+    }
+  },
+  "llama-3.2-1b-q4f16_1-mlc": {
+    "name": "meta-llama/llama-3.2-1b-instruct-q4f16_1",
+    "title": "Llama-3.2-1B \u276f MLC q4f16_1 \u276f JetPack 6.1+",
+    "url": "hf.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
+    "quantization": "q4f16_1",
+    "tags": [
+      "llama-3.2-1b",
+      "mlc:r36",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ],
+    "stats": {
+      "agx-orin": {
+        "decode": 136.1,
+        "prefill": 1046.1
+      },
+      "orin-nano": {
+        "decode": 16.1,
+        "prefill": 146.1
+      },
+      "memory": 8191.2
+    }
+  },
+  "llama-3": {
+    "name": "Meta Llama",
+    "tags": [
+      "llm"
+    ]
+  }
+}

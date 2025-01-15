@@ -4,7 +4,7 @@
 .property-field {
   font-size: 92.5%;
   font-family: monospace;
-  color: rgba(0,0,0,0.85);
+  color: rgba(0,0,0,0.7);
   background: rgba(255,255,255,0.2);
   border: 1px solid rgba(0,0,0,.2);
   padding-top: 4px;
@@ -37,8 +37,12 @@ input[type=text].property-field {
   padding-bottom: 4px;
 }
 
-input[type=number].property-field, select.property-field {
+input[type=number].property-field {
   width: 100px;
+}
+
+select.property-field {
+  width: 100%;
 }
 
 #hf_token-control {

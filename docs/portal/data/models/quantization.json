@@ -1,0 +1,19 @@
+{
+  "quantization": {
+    "name": "Quantization API",
+    "tags": ["enum"],
+    "help": "The type of quantization used."
+  },
+  "fp16": {
+    "name": "fp16 (HF Transformers)",
+    "tags": ["quantization", "transformers"]
+  },
+  "q4f16_ft": {
+    "name": "q4f16_ft (MLC)",
+    "tags": ["quantization", "mlc"]
+  },
+  "q4f16_1": {
+    "name": "q4f16_1 (MLC)",
+    "tags": ["quantization", "mlc"]
+  }
+}

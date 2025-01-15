@@ -59,7 +59,10 @@
  * 
  * See the GraphBrowser from browser.js for examples of visualizing records interactively.
  */ 
-import {exists, is_string, is_list} from "../nanolab.js";
+import {
+  exists, is_string, is_dict, is_list
+ } from "../nanolab.js";
+
 
 export class GraphTags {
   /*
@@ -277,11 +280,17 @@ export class GraphTags {
   /*
    * Return an index where the tag lists include all parent tags
    * in the heirarchy, up to and including the maximum tree depth.
-   * @note this is done automatically and accessed with `db.flat`
+   * 
+   * If given a property, it will flatten that property for the given key.
+   * 
+   * @note index-level flatten is performed automatically during construction,
+   *       and can be accessed through its cached copy with `db.flat`
    */
   flatten(args={}) {
     const key = args.key;
     const depth = args.depth;
+    const property = args.property;
+
     var output = args.output ?? {tags: []};
     
     if( exists(key) ) { // flatten just one in particular
@@ -293,12 +302,26 @@ export class GraphTags {
         return output;
       }
 
-      for( let var_key in this.index[key] ) {
+      if( exists(property) ) { // return just this key's property
+        output = structuredClone(this.flat[property]);
+        const ancestors = this.ancestors[key].reverse().concat([key]);
+        for( const ancestor of ancestors ) {
+          if( !(property in this.flat[ancestor]) )
+            continue;
+          let prop_dict = this.flat[ancestor][property];
+          if( !(is_dict(prop_dict)) )
+            prop_dict = {value: prop_dict};
+          Object.assign(output, prop_dict); // inherit values up the tree
+        }
+        return output;
+      }
+
+      for( const var_key in this.index[key] ) { // add properties from this key
         if( !(var_key in output) )
           output[var_key] = this.index[key][var_key];
       }
 
-      for( let key_tag of this.index[key].tags ) {
+      for( const key_tag of this.index[key].tags ) { // add tags from this key
         if( !output.tags.includes(key_tag) )
           output.tags.push(key_tag);
 

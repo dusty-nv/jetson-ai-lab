@@ -1,7 +1,7 @@
 /*
  * Utilities for generating and manipulating HTML nodes in the DOM.
  */
-import { exists } from "../nanolab.js";
+import { exists, is_string } from "../nanolab.js";
 
 /**
  * Wrapper to create single HTML node from string (https://stackoverflow.com/a/35385518)
@@ -16,8 +16,14 @@ import { exists } from "../nanolab.js";
  */
 export function htmlToNode(html, parent=null) {
   const template = document.createElement('template');
-  template.innerHTML = html.trim();
+
+  if( is_string(html) )
+    template.innerHTML = html.trim();
+  else
+    template.content.appendChild(html);
+
   const nNodes = template.content.childNodes.length;
+  const child = template.content.firstChild;
 
   if (nNodes !== 1) {
       throw new Error(
@@ -29,10 +35,10 @@ export function htmlToNode(html, parent=null) {
   }
 
   if( exists(parent) ) {
-      parent.appendChild(child);
+    parent.appendChild(child);
   }
 
-  return template.content.firstChild;
+  return child;
 }
   
 /**
@@ -48,7 +54,11 @@ export function htmlToNodes(html, parent=null) {
   console.log('HTML\n', html);*/
 
   const template = document.createElement('template');
-  template.innerHTML = html.trim();
+
+  if( is_string(html) )
+    template.innerHTML = html.trim();
+  else
+    template.content.appendChild(html);
 
   /*console.log('Nodes', template.content.childNodes);
   console.log('Parent', parent);
@@ -120,4 +130,35 @@ export function strToWeb(option) {
  */
 export function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+
+/*
+ * Insert line breaks when a string gets too long
+ * (this is setup for multi-line shell commands)
+ */
+export function wrapLines({text, delim=' -', newline=' \\\n', indent=2, max_length=20}) {
+  if( !exists(text) && arguments.length > 0 )
+    text = arguments[0];
+
+  const split = text.split(delim);
+  let lines = [''];
+  indent = (indent > 0) ? ' '.repeat(indent) : '';
+
+  for( const i in split ) {
+    const next = (i > 0 ? delim : '') + split[i];
+    const last = lines.length - 1;
+
+    if( lines[last].length + next.length >= max_length )
+      lines.push(next);
+    else
+      lines[last] += next;
+  }
+
+  for( const i in lines ) {
+    lines[i] = (i > 0 ? indent : '') + 
+      lines[i].trim().replaceAll('  ', ' ');
+  }
+
+  return lines.join(newline);
 }

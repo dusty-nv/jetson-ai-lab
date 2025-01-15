@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { 
   GraphTags, TreeGrid, TreeList, ToggleSwitch, 
-  PropertyEditor, htmlToNode, exists,
+  ConfigEditor, htmlToNode, exists,
   as_element, is_string, is_list, len
 } from '../nanolab.js';
 
@@ -218,7 +218,7 @@ export class SearchBar {
     card_container.html(html);
 
     $('.btn-open-item').on('click', (evt) => {
-      const dialog = new PropertyEditor({
+      const dialog = new ConfigEditor({
         db: this.db,
         key: evt.target.dataset.model,
       });

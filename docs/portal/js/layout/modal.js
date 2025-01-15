@@ -17,7 +17,6 @@ export class ModalDialog {
             <div class="modal-title-bar" id="${id}-title-bar">
               <span class="modal-close">&times;</span>
               <span class="modal-title">${title}</span>
-              ${menu}
             </div>
             ${header}
           </div>
@@ -29,10 +28,16 @@ export class ModalDialog {
     /*<div class="modal-footer">Footer</div>*/
 
     this.node = htmlToNode(html);
-    this.body = this.node.getElementsByClassName("modal-body")[0];
+    this.body = this.node.querySelector('.modal-body');
+
+    if( exists(menu) ) {
+      this.node.querySelector(
+        '.modal-title-bar'
+      ).appendChild(htmlToNode(menu));
+    }
 
     if( exists(body) ) {
-      this.body.appendChild(htmlToNode(body.trim()));
+      this.body.appendChild(htmlToNode(body));
     }
 
     as_element('.root-container').appendChild(this.node);

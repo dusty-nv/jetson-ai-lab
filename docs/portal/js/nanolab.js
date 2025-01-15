@@ -16,5 +16,6 @@ export * from './layout/treeGrid.js';
 export * from './layout/treeList.js';
 
 export * from './panels/codeEditor.js';
-export * from './panels/propertyEditor.js';
+export * from './panels/configEditor.js';
+export * from './panels/propertyTable.js';
 export * from './panels/searchBar.js';

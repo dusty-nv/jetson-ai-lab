@@ -8,7 +8,7 @@ export function exists(x) {
 export function len(x) {
   if( !exists(x) )
     return 0;
-  if( is_list(x) )
+  if( is_list(x) || is_string(x) )
     return x.length;
   else
     return Object.keys(x).length;
@@ -27,6 +27,10 @@ export function is_string(x) {
     return true;
   else
     return false;
+}
+
+export function is_dict(x) {
+  return exists(x) && (x.constructor == Object);
 }
 
 export function is_list(x) {

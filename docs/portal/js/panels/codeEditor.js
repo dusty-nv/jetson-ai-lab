@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { 
-  htmlToNode, htmlToNodes, exists, nonempty
+  htmlToNode, htmlToNodes, exists, nonempty, as_element
 } from '../nanolab.js';
 
 
@@ -15,7 +15,7 @@ export class CodeEditor {
    */
   constructor({id,parent}={}) {
     this.id = id ?? `code-editor`;
-    this.parent = parent;
+    this.parent = as_element(parent);
 
     this.outerHTML = `
       <div id="${this.id}" class="full-height">
@@ -76,8 +76,8 @@ export class CodeEditor {
 
       pageNode = htmlToNode(
         `<div class="code-container full-height hidden" id="${ids.page}">` +
-        `<pre><i id="${ids.copy}" class="bi bi-copy btn-copy" title="Copy code to clipboard"></i>` +
-        `<code class="language-${tab.lang}">${tab.code}</code></pre></div>`
+        `<pre><i id="${ids.copy}" class="bi bi-copy btn-copy" title="Copy to clipboard"></i>` +
+        `<code class="language-${tab.lang} full-height" style="scroll-padding-left: 20px;">${tab.code}</code></pre></div>`
       );
 
       Prism.highlightAllUnder(pageNode);

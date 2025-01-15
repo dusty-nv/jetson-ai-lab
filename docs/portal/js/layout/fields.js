@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { 
-  exists
+  exists, nonempty
 } from '../nanolab.js';
 
 
@@ -12,13 +12,17 @@ export function PropertyField({
   db, key, value, id=null, 
   multiple=null, multiline=null, 
   password=null, label=null,
+  placeholder=null,
 }) {
   const field = db.flat[key];
   const type_key = db.parents[key][0];
   const children = db.children[key];
 
   const data = `data-key="${key}"`;
+  const title = exists(db.flat[key].help) ? `title="${db.flat[key].help}"` : ``;
   const value_html = exists(value) ? `value="${value}"` : "";
+
+  placeholder = exists(placeholder) ? `placeholder="${placeholder}"` : '';
 
   id ??= `${key}-control`;
 
@@ -32,11 +36,7 @@ export function PropertyField({
     html += PropertyLabel({db: db, key: key, value: value, id: id});
   }
 
-  /*`  <div style="margin-bottom: 10px;">
-      <label for="${id}" class="form-label">${field.name}</label>
-  `;*/
-
-  //console.log('FIELD', field, 'TYPE_KEY', type_key, 'CHILDREN', children);
+  /* <label for="${id}" class="form-label">${field.name}</label> */
 
   if( type_key === 'enum' ) {
     let multiple_html = multiple ? 'multiple="multiple"' : '';
@@ -52,7 +52,7 @@ export function PropertyField({
       select2_args[id] = {tags: true, placeholder: 'enter'}; //tags: true, placeholder: 'enter'};
     }*/
     
-    html += `<select id="${id}" class="property-field" ${data} ${multiple_html}>\n`;
+    html += `<select id="${id}" class="property-field" ${data} ${multiple_html} ${title}>\n`;
     
     for( let child_key of children ) {
       if( child_key == value )
@@ -78,10 +78,10 @@ export function PropertyField({
     input_html += `</datalist>`; 
   }*/
   else if( exists(multiline) ) { // form-control
-    html += `<textarea id="${id}" class="property-field" rows=${multiline} ${data}>${value}</textarea>`;
+    html += `<textarea id="${id}" class="property-field" rows=${multiline} ${data} ${title}>${value}</textarea>`;
   }
   else if( type_key == 'color' ) {
-    html += `<input id="${id}" class="property-field" type="color" ${value_html} ${data}/>`;
+    html += `<input id="${id}" class="property-field" type="color" ${value_html} ${data} ${title}/>`;
   }
   else {
     let type = type_key;
@@ -96,7 +96,7 @@ export function PropertyField({
     html += `
       <input id="${id}" class="property-field" type="${type}" 
         ${(type === 'text' || type === 'path') ? 'style="width: 100%"' : ''} 
-        ${value_html} ${data}>`;
+        ${value_html} ${placeholder} ${data} ${title}>`;
   }
 
   //html += `</div>`;
