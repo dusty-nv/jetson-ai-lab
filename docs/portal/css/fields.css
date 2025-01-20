@@ -2,7 +2,7 @@
  * Styles for the property editor and input fields
  */
 .property-field {
-  font-size: 92.5%;
+  font-size: 90%;
   font-family: monospace;
   color: rgba(0,0,0,0.7);
   background: rgba(255,255,255,0.2);

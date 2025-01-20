@@ -68,7 +68,8 @@
   /*background-color: hsla(96, 49%, 45%, 0.98);*/ /*#67ab3afa;*/
   background: linear-gradient(355deg, hsla(96, 29%, 40%, 0.97) 0%, hsla(96, 49%, 45%, 1) 100%);
   border-radius: 12px 12px 0px 0px;
-  border-bottom: 2px solid rgba(165,165,165);
+  /*border-bottom: 2px solid rgba(0,0,0,0.5);*/ /*rgba(165,165,165);*/
+  box-shadow: 5px 2px 3px rgba(90,90,90,0.4);
 }
 
 /* Extensions for user elements in header */
@@ -102,12 +103,14 @@
 /* make the dialog body partially transparent */
 .modal-body {
   padding: 15px 15px;
+  margin: 2px 0px 0px 3px;
   color: #333333;
   font-weight: 500;
   /*text-shadow: rgba(50,50,50,0.4) 3px 0 3px;*/
   border-radius: 0px 0px 12px 12px;
   backdrop-filter: blur(8px);
   background: linear-gradient(0deg, rgba(190,190,190,0.75) 0%,rgb(205,205,205,0.75) 100%);
+  box-shadow: 5px 5px 5px rgb(103, 103, 103);
 }
 
 .modal-body .btn-md {

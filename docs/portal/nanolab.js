@@ -8,6 +8,8 @@ import './dist/jquery/jquery.js';
 import './dist/select2/select2.js';
 import './dist/prism/prism.js';
 import './dist/composerize/composerize.js';
+import './dist/FileSaver/FileSaver.js';
+import './dist/jszip/jszip.js';
 
 if( exists(document) ) { // browser mode
   include(

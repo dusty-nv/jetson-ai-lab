@@ -187,6 +187,6 @@ export class ConfigEditor {
   }
 
   updateCode(key) {
-    this.code.refresh(ModelGenerator({db: this.db, key: key ?? this.key}));
+    this.code.refresh(ModelGenerator({db: this.db, key: key ?? this.key}).pages);
   }
 }

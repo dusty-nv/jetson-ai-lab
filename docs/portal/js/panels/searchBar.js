@@ -127,6 +127,26 @@ export class SearchBar {
           ${gateSwitch.html()}
           ${layoutSwitch.html()}
         </div>
+        <div id="${this.id}-help-container" class="flex flex-column help-container">
+          <div class="help-container-header"><div>Model / Device Configuration</div></div>
+          <div class="help-container-body">
+            <div>
+              Deploy open AI/ML microservices and models optimized with quantization for local serving via OpenAI endpoints.<br/><br/>
+              This generates <span class="monospace" style="font-size: 95%">docker-compose</span> stacks that launch 
+              <span class="monospace" style="font-size: 95%"><a href="https://github.com/dusty-nv/jetson-containers" target="_blank">jetson-containers</a></span> 
+              along with benchmarks & prompt templates for Python, JavaScript, and Bash.<br/><br/>
+              The page uses a serverless graph DB, and you can download the stacks from your query as a .zip to your Jetson
+            </div>
+            <div style="margin: 15px 5px">
+              <button id="${this.id}-download-set" class="btn-green btn-sm" title="Download the set of docker-compose templates and scripts corresponding to your selection from the search query.">
+              <i class="bi bi-cloud-download" style="font-size: 120%; font-weight: 600; margin-right: 5px;"></i>Download Set</button>
+              <button class="btn-green btn-sm" title="Download all the templates from every model and service currently available in the index.">
+              <i class="bi bi-cloud-download" style="font-size: 120%; font-weight: 600; margin-right: 5px;"></i>Download All</button>
+            </div>
+            We'll continue populating more models, services, and interactive elements to the site.  Find us on <a href="https://discord.gg/vpmNaT46" target="_blank">Discord</a> to get involved.
+            <br/><br/>Thanks to all our partners, researchers, and contributors in the field! <span style="font-size: 135%">🤗 🤖</span> 
+          </div>
+        </div>
         <div id="${this.id}-card-container">
         </div>
       </div>

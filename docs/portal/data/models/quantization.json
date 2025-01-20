@@ -2,7 +2,7 @@
   "quantization": {
     "name": "Quantization API",
     "tags": ["enum"],
-    "help": "The type of quantization used."
+    "help": "The inference API and type of quantization used."
   },
   "fp16": {
     "name": "fp16 (HF Transformers)",

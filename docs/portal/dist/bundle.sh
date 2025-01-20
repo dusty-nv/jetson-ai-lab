@@ -53,7 +53,9 @@ if [ "$#" -gt 0 ]; then
     exit 0 
 fi
 
-bundle "composerize"
+#bundle "composerize"
+
+bundle "file-saver" "FileSaver" "const FileSaver = require('file-saver'); module.exports = FileSaver;"
 
 # these were attempts to browserify code highlighting packages
 # ended up just using prism.js with <script> (their normal way) 

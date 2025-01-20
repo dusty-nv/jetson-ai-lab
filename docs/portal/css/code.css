@@ -10,7 +10,7 @@
 
 pre[class*="language-"] {
   background: var(--theme-gray-darker);
-  padding: 15px 15px;
+  padding: 12px 10px;
   margin: 5px 0px 0px 0px;
   height: 100%;
 }
@@ -21,7 +21,7 @@ pre[class*="language-"] > code[class*="language-"] {
   margin: 0;
 }
 
-.code-block, .btn-copy {
+.code-block, .btn-float, .btn-absolute {
   color: hsla(82deg, 100%, 38.1%, 1.0);
   text-shadow: rgba(50,50,50,0.35) 3px 0 3px;
   font-family: monospace;
