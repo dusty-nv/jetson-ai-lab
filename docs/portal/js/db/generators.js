@@ -2,7 +2,7 @@
  * Templates that generate docker service configs, code examples, docs, ect.
  * for launching containers, jobs, or initiating workflow actions.
  */ 
-import {exists, wrapLines, is_list} from '../nanolab.js';
+import {exists, wrapLines, is_list, nonempty} from '../nanolab.js';
 
 
 /* 
@@ -16,8 +16,12 @@ export function ModelGenerator(args) {
   PythonGenerator(args);
   JavascriptGenerator(args);
   CurlGenerator(args);
-  ValidatePages(args);
 
+  if( !exists(ValidatePages(args)) ) {
+    console.log(`Failed to generate valid pages`, args);
+    return null;
+  }
+    
   console.log(`[ConfigGenerator] generated configs for '${args.key}'`, args.env);
   return args.env;
 }
@@ -28,12 +32,16 @@ export function ModelGenerator(args) {
 export function EnvGenerator({db, key, env}) {
   env ??= {pages: {}, properties: {}};
 
-  for( const field_key of db.props[key] ) {
-    env.properties[field_key] = db.flatten({key: key, property: field_key});
-    env[field_key] = env.properties[field_key].value;
+  if( nonempty(db.props[key]) ) {
+    for( const field_key of db.props[key] ) {
+      env.properties[field_key] = db.flatten({key: key, property: field_key});
+      env[field_key] = env.properties[field_key].value;
+    }
   }
 
-  env.model_name ??= get_model_name(env.url);
+  console.log('ENV GEN', key, env);
+  // using the little cleaner key led to issues with it not lining up with filesystems
+  env.model_name ??= get_model_name(env.url); // key; 
   return env;
 }
 
@@ -72,8 +80,10 @@ export function DockerGenerator({db, key, env}) {
   if( exists(env.cache_dir) ) {
     const tr = env.cache_dir.trim();
     if( tr.length > 0 ) {
-      opt += `-v ${tr}:/root/.cache `;
-      opt += `-e HF_HUB_CACHE=/root/.cache/huggingface `;
+      var cache_dir = `-v ${tr}:/root/.cache `;
+      var hf_hub_dir = `-e HF_HUB_CACHE=/root/.cache/huggingface `;
+      opt += cache_dir;
+      opt += hf_hub_dir;
     }
   }
 
@@ -137,13 +147,49 @@ export function DockerGenerator({db, key, env}) {
 
   var compose = composerize(env.pages.docker_run.code, null, 'latest', 2); // this gets imported globally by nanolab.js
   compose = compose.substring(compose.indexOf("\n") + 1); // first line from composerize is an unwanted name
-  compose = `# Save as docker-compose.yml and run 'docker compose up'\n` + compose;
+  compose = `# Save as compose.yml and run 'docker compose up'\n` +
+    `# For benchmarking, use:  docker compose --profile perf_benchmark up\n` + compose;
 
   env.pages.docker_compose = {
     name: 'compose',
     lang: 'yaml',
     code: compose
   };
+
+  //
+  // Generate alternate docker-compose profiles that support additional tasks/workflows:  
+  //
+  //    --profile perf_benchmark
+  //    --profile acc_benchmark
+  //
+  let perf_cmd = `docker run -it --rm --network=host `;
+  const model_dir = `/root/.cache/mlc_llm/${get_model_repo(env.model_name)}`;
+
+  perf_cmd += `${exists(cache_dir) ? cache_dir : ''} ${exists(hf_hub_dir) ? hf_hub_dir : ''}`;
+  perf_cmd += ` ${env.container_image} /bin/bash -c "`;
+  perf_cmd += `   python3 -m mlc_llm.bench --dataset sharegpt `;
+  perf_cmd += `     --dataset-path $(huggingface-downloader --type dataset anon8231489123/ShareGPT_Vicuna_unfiltered/ShareGPT_V3_unfiltered_cleaned_split.json) `;
+  perf_cmd += `     --tokenizer ${model_dir} `;
+  perf_cmd += `     --api-endpoint openai --num-requests 25 --num-warmup-requests 2 `;
+  perf_cmd += `     --num-concurrent-requests 2 --num-gpus 1 `;
+  perf_cmd += `     --host ${exists(server_url) ? server_url.hostname : '0.0.0.0'} `;
+  perf_cmd += `     --port ${exists(server_url) ? server_url.port : 9000} `;
+  perf_cmd += `     --output ${model_dir}/perf_benchmarks.csv " `;
+
+  var perf_compose = composerize(perf_cmd, null, 'latest', 2);
+
+  for( let n=0; n < 3; n++ )
+    perf_compose = perf_compose.substring(perf_compose.indexOf("\n") + 1);
+
+  const perf_pre = `  perf_benchmark:\n    profiles:\n      - perf_benchmark\n` +
+    `    depends_on:\n      llm_server:\n        condition: service_started\n`;
+
+  //console.log('PERF CMD', perf_cmd);
+  //console.log(`PERF_COMPOSE\n${perf_compose}\nPERF_PRE\n${perf_pre}`);
+
+  env.pages.docker_compose.code = 
+    env.pages.docker_compose.code.replace('  mlc:', '  llm_server:') 
+    + '\n' + perf_pre + perf_compose;
 
   return env;
 }
@@ -300,30 +346,32 @@ const _LANG_TO_EXT = {
  * export a zip file to download with everything
  */
 export function ZipGenerator({db, keys}) {
-  
-  args.env ??= {pages: {}, properties: {}};
-  args.env = ModelGenerator(args);
 
   let zip = new JSZip();
   let folders = {};
 
   const families = db.children['llm'];
   
-  for( const family_name in families )
+  for( const family_name of families )
     folders[family_name] = zip.folder(family_name);
-  
+
   for( const key of keys ) {
     const env = ModelGenerator({db: db, key: key});
+
+    if( !exists(env) )
+      continue;
+
     const x = db.flat[key];
 
     function find_family() {
-      for( const family_name in families )
+      for( const family_name of families ) {
         if( db.ancestors[key].includes(family_name) )
           return family_name;
+      }
     }
 
     const group = find_family();
-    const key_folder = exists(group) ? group.folder(key) : zip.folder(key);
+    const key_folder = exists(group) ? folders[group].folder(key) : zip.folder(key);
 
     for( const page_name in env.pages ) {
       const page = env.pages[page_name];
@@ -402,6 +450,10 @@ export function get_model_name(model) {
   return model.replace('hf.co/', '');
 }
 
+export function get_model_repo(model) {
+  return model.replace('hf.co/', '');
+}
+
 
 /*
  * Validate missing entries from pages (for reverse links through the UI)
@@ -414,6 +466,9 @@ function ValidatePages(args) {
     let page = pages[page_key];
     page.db ??= args.db;
     page.key ??= args.key;
+
+    if( page.code.includes('undefined') )
+      return null;
   }
   //pages.db ??= args.db;
   //pages.key ??= args.key;

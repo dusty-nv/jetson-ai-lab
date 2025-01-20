@@ -71,9 +71,9 @@
 }
 
 .help-container {
-    position: absolute;
-    right: 90px;
-    width: 300px;
+    position: relative;
+    bottom: 410px;
+    width: 310px;
     margin: 65px 15px 15px 55px;
     box-shadow: 2px 7px 13px 0px rgba(0,0,0,0.2);
     border-radius: 5px 5px 5px 5px;

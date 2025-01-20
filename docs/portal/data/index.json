@@ -361,8 +361,8 @@
     "help": "The server's hostname/IP and port that it is listening on for incoming requests.\n0.0.0.0 will listen on all network interfaces (127.0.0.1 from localhost only)\nThis IP address also gets populated in the examples, so set it to your device."
   },
   "mlc:r36": {
-    "name": "dustynv/mlc:0.19.0-r36.4.0",
-    "container_image": "dustynv/mlc:0.19.0-r36.4.0",
+    "name": "dustynv/mlc:0.19.1-r36.4.0",
+    "container_image": "dustynv/mlc:0.19.1-r36.4.0",
     "container_cmd": "$OPTIONS $IMAGE sudonim serve $ARGS",
     "container_options": "-it --rm",
     "server_host": "0.0.0.0:9000",
@@ -401,7 +401,7 @@
       }
     }
   },
-  "llama-3.2-1b-q4f16_ft-mlc": {
+  "llama-3.2-1b-instruct-q4f16_ft-mlc": {
     "name": "meta-llama/llama-3.2-1b-instruct-q4f16_ft",
     "title": "Llama-3.2-1B \u276f MLC q4f16_ft \u276f JetPack 6.1+",
     "url": "hf.co/dusty-nv/Llama-3.2-1B-Instruct-q4f16_ft-MLC",
@@ -425,7 +425,7 @@
       "memory": 891.2
     }
   },
-  "llama-3.2-1b-q4f16_1-mlc": {
+  "llama-3.2-1b-instruct-q4f16_1-mlc": {
     "name": "meta-llama/llama-3.2-1b-instruct-q4f16_1",
     "title": "Llama-3.2-1B \u276f MLC q4f16_1 \u276f JetPack 6.1+",
     "url": "hf.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
