@@ -2,7 +2,7 @@
  * Templates that generate docker service configs, code examples, docs, ect.
  * for launching containers, jobs, or initiating workflow actions.
  */ 
-import {exists, wrapLines, is_list, nonempty} from '../nanolab.js';
+import {exists, wrapLines, is_list, is_string, nonempty} from '../nanolab.js';
 
 
 /* 
@@ -39,9 +39,13 @@ export function EnvGenerator({db, key, env}) {
     }
   }
 
-  console.log('ENV GEN', key, env);
+  for( const prop_key in db.flat[key] ) {
+    if( !(prop_key in env) )
+      env[prop_key] = db.flat[key][prop_key];
+  }
+
   // using the little cleaner key led to issues with it not lining up with filesystems
-  env.model_name ??= get_model_name(env.url); // key; 
+  env.model_name ??= get_model_name(env.url) ?? key; // key; 
   return env;
 }
 
@@ -50,7 +54,7 @@ export function EnvGenerator({db, key, env}) {
  */
 export function DockerGenerator({db, key, env}) {
 
-  if( !db.ancestors[key].includes('container') )
+  if( !(key in db.ancestors) || !db.ancestors[key].includes('container') )
     return env;
 
   console.log('DockerGenerator', env);
@@ -73,8 +77,10 @@ export function DockerGenerator({db, key, env}) {
 
   if( exists(env.hf_token) ) {
     const tr = env.hf_token.trim();
-    if( tr.length > 0 )
-      opt += `-e HF_TOKEN=${env.hf_token} `;
+    if( tr.length > 0 ) {
+      var hf_token = `-e HF_TOKEN=${env.hf_token} `;
+      opt += hf_token;
+    }
   }
 
   if( exists(env.cache_dir) ) {
@@ -87,12 +93,20 @@ export function DockerGenerator({db, key, env}) {
     }
   }
 
+  const DEBUG=``; //`-v /mnt/NVME/repos/sudonim/sudonim:/usr/local/bin/sudonim `;
+
+  if( nonempty(DEBUG) )
+    opt += DEBUG;
+
   opt = wrapLines(opt) + ' \\\n ';
 
   const image = `${env.container_image} \\\n   `; 
 
+  const model_api = get_model_api(env.url ?? env.model_name)
+  const model_repo = get_model_repo(env.url ?? env.model_name);
+
   let args = ` \\
-      --model ${env.model_name} \\
+      --model ${model_repo} \\
       --quantization ${env.quantization} \\
       --max-batch-size ${env.max_batch_size}`;
 
@@ -148,8 +162,17 @@ export function DockerGenerator({db, key, env}) {
   var compose = composerize(env.pages.docker_run.code, null, 'latest', 2); // this gets imported globally by nanolab.js
   compose = compose.substring(compose.indexOf("\n") + 1); // first line from composerize is an unwanted name
   compose = `# Save as compose.yml and run 'docker compose up'\n` +
-    `# For benchmarking, use:  docker compose --profile perf_benchmark up\n` + compose;
+    `# For benchmarking, use:  docker compose --profile perf_bench up\n` + 
+    (model_api === 'llama.cpp' ? '# With llama.cpp backend, you may encounter request ack/response errors (these can safely be ignored during the benchmark)\n' : '') 
+    + compose;
 
+  compose += `\n    healthcheck:`;
+  compose += `\n      test: ["CMD", "curl", "-f", "http://${server_url.hostname}:${server_url.port}/v1/models"]`;
+  compose += `\n      interval: 20s`;
+  compose += `\n      timeout: 60s`;
+  compose += `\n      retries: 45`;    
+  compose += `\n      start_period: 15s`; 
+  
   env.pages.docker_compose = {
     name: 'compose',
     lang: 'yaml',
@@ -159,37 +182,46 @@ export function DockerGenerator({db, key, env}) {
   //
   // Generate alternate docker-compose profiles that support additional tasks/workflows:  
   //
-  //    --profile perf_benchmark
-  //    --profile acc_benchmark
+  //    --profile perf_bench
+  //    --profile acc_bench
   //
   let perf_cmd = `docker run -it --rm --network=host `;
-  const model_dir = `/root/.cache/mlc_llm/${get_model_repo(env.model_name)}`;
+  
+  //const model_dir = get_model_cache(env);
+  const perf_container = 'dustynv/mlc:0.19.2-r36.4.0'; // env.container_image
 
-  perf_cmd += `${exists(cache_dir) ? cache_dir : ''} ${exists(hf_hub_dir) ? hf_hub_dir : ''}`;
-  perf_cmd += ` ${env.container_image} /bin/bash -c "`;
-  perf_cmd += `   python3 -m mlc_llm.bench --dataset sharegpt `;
-  perf_cmd += `     --dataset-path $(huggingface-downloader --type dataset anon8231489123/ShareGPT_Vicuna_unfiltered/ShareGPT_V3_unfiltered_cleaned_split.json) `;
-  perf_cmd += `     --tokenizer ${model_dir} `;
-  perf_cmd += `     --api-endpoint openai --num-requests 25 --num-warmup-requests 2 `;
-  perf_cmd += `     --num-concurrent-requests 2 --num-gpus 1 `;
-  perf_cmd += `     --host ${exists(server_url) ? server_url.hostname : '0.0.0.0'} `;
-  perf_cmd += `     --port ${exists(server_url) ? server_url.port : 9000} `;
-  perf_cmd += `     --output ${model_dir}/perf_benchmarks.csv " `;
+  perf_cmd += `${exists(cache_dir) ? cache_dir : ''} `;
+  perf_cmd += `${exists(hf_hub_dir) ? hf_hub_dir : ''} `;
+  perf_cmd += `${exists(hf_token) ? hf_token : ''} `;
+  perf_cmd += `-v /var/run/docker.sock:/var/run/docker.sock ${DEBUG} `;
+  perf_cmd += `${perf_container} sudonim bench stop `;
+  perf_cmd += `--host ${exists(server_url) ? server_url.hostname : '0.0.0.0'} `;
+  perf_cmd += `--port ${exists(server_url) ? server_url.port : 9000} `;
+  perf_cmd += `--model ${env.url} `;
+
+  if( 'tokenizer' in env )
+    perf_cmd += `--tokenizer ${env.tokenizer} `;
 
   var perf_compose = composerize(perf_cmd, null, 'latest', 2);
 
   for( let n=0; n < 3; n++ )
     perf_compose = perf_compose.substring(perf_compose.indexOf("\n") + 1);
 
-  const perf_pre = `  perf_benchmark:\n    profiles:\n      - perf_benchmark\n` +
-    `    depends_on:\n      llm_server:\n        condition: service_started\n`;
+  const perf_pre = `  perf_bench:\n    profiles:\n      - perf_bench\n` +
+    `    depends_on:\n      llm_server:\n        condition: service_healthy\n`;
 
   //console.log('PERF CMD', perf_cmd);
   //console.log(`PERF_COMPOSE\n${perf_compose}\nPERF_PRE\n${perf_pre}`);
 
+  let code = env.pages.docker_compose.code;
+
+  code = code.replace('  mlc:', '  llm_server:');
+  code = code.replace('  llama_cpp:', '  llm_server:');
+  code = code.replace('  tensorrt_llm:', '  llm_server:');
+  code = code.replace('  vllm:', '  llm_server:');
+
   env.pages.docker_compose.code = 
-    env.pages.docker_compose.code.replace('  mlc:', '  llm_server:') 
-    + '\n' + perf_pre + perf_compose;
+    code + '\n' + perf_pre + perf_compose;
 
   return env;
 }
@@ -407,10 +439,8 @@ function find_key(x) {
 }
 
 export function save_pages(pages) {
-  console.log('Saving pages to zip', pages);
-  const key = find_key(pages);
-  console.log('SAVE PAGES  KEY', key);
 
+  const key = find_key(pages);
   let zip = new JSZip();
   let folder = zip.folder(key);
 
@@ -445,15 +475,55 @@ export function get_page_name(page) {
  * Parse model names from path (normally this should just use the model key)
  */
 export function get_model_name(model) {
+  if( !exists(model) )
+    return null;
+
   //model = model.split('/');
   //return model[model.length-1];
-  return model.replace('hf.co/', '');
+  model = model.replace('hf.co/', '');
+
+  if( model.toLowerCase().includes('.gguf') ) {
+    const split = model.split('/');
+    model = split[split.length-1];
+  }
+
+  return model;
 }
 
 export function get_model_repo(model) {
   return model.replace('hf.co/', '');
 }
 
+export function get_model_cache(env) {
+  var model = env.url ?? env.model_name;
+  const api = get_model_api(model);
+
+  if( api == 'mlc' )
+    var cache = 'mlc_llm';
+  else if( api == 'llama.cpp' )
+    var cache = 'llama_cpp';
+
+  var repo = get_model_repo(model);
+  var split = repo.split('/');
+
+  if( split.length >= 3 && split[split.length-1].toLowerCase().includes('.gguf') )
+    repo = split.slice(0, split.length-1).join('/');
+
+  return `/root/.cache/${cache}/${repo}`;
+}
+
+export function get_model_api(model) {
+  if( !is_string(model) )
+    return null;
+  model = model.toLowerCase();
+
+  if( model.includes('mlc') )
+    return 'mlc';
+  else if( model.includes('.gguf') )
+    return 'llama.cpp';
+  else
+    console.warn(`Unsupported / unrecognized model ${model}`);
+}
 
 /*
  * Validate missing entries from pages (for reverse links through the UI)

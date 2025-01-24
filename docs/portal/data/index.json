@@ -159,6 +159,48 @@
       "mlc"
     ]
   },
+  "q4_k_m": {
+    "name": "Q4_K_M (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
+  "q4_k_l": {
+    "name": "Q4_K_L (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
+  "q5_k_s": {
+    "name": "Q5_K_S (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
+  "q5_k_m": {
+    "name": "Q5_K_M (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
+  "q5_k_l": {
+    "name": "Q5_K_L (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
+  "q6_k": {
+    "name": "Q6_K (llama.cpp)",
+    "tags": [
+      "quantization",
+      "llama_cpp"
+    ]
+  },
   "jetson": {
     "name": "Jetson",
     "tags": []
@@ -317,7 +359,11 @@
     ]
   },
   "llama_cpp:r36": {
-    "name": "dustynv/llama_cpp:0.3.5-r36.4.0",
+    "name": "dustynv/llama_cpp:0.3.6-r36.4.0",
+    "container_image": "dustynv/llama_cpp:0.3.6-r36.4.0",
+    "container_cmd": "$OPTIONS $IMAGE sudonim serve $ARGS",
+    "container_options": "-it --rm --pull=always",
+    "server_host": "0.0.0.0:9000",
     "tags": [
       "container",
       "llama_cpp",
@@ -361,10 +407,10 @@
     "help": "The server's hostname/IP and port that it is listening on for incoming requests.\n0.0.0.0 will listen on all network interfaces (127.0.0.1 from localhost only)\nThis IP address also gets populated in the examples, so set it to your device."
   },
   "mlc:r36": {
-    "name": "dustynv/mlc:0.19.1-r36.4.0",
-    "container_image": "dustynv/mlc:0.19.1-r36.4.0",
+    "name": "dustynv/mlc:0.19.2-r36.4.0",
+    "container_image": "dustynv/mlc:0.19.2-r36.4.0",
     "container_cmd": "$OPTIONS $IMAGE sudonim serve $ARGS",
-    "container_options": "-it --rm",
+    "container_options": "-it --rm --pull=always",
     "server_host": "0.0.0.0:9000",
     "tags": [
       "container",
@@ -448,6 +494,54 @@
       },
       "memory": 8191.2
     }
+  },
+  "llama-3.2-1b-instruct-q4-gguf": {
+    "name": "bartowski/Llama-3.2-1B-Instruct-GGUF",
+    "title": "Llama-3.2-1B \u276f llama.cpp Q4_K_M \u276f JetPack 6.1+",
+    "url": "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF/Llama-3.2-1B-Instruct-Q4_K_M.gguf",
+    "quantization": "q4_k_m",
+    "tokenizer": "pcuenq/Llama-3.2-1B-Instruct-tokenizer",
+    "max_context_len": 8192,
+    "prefill_chunk": 8192,
+    "tags": [
+      "llama-3.2-1b",
+      "llama_cpp:r36",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ]
+  },
+  "llama-3.2-1b-instruct-q5-gguf": {
+    "name": "bartowski/Llama-3.2-1B-Instruct-GGUF",
+    "title": "Llama-3.2-1B \u276f llama.cpp Q5_K_M \u276f JetPack 6.1+",
+    "url": "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF/Llama-3.2-1B-Instruct-Q5_K_M.gguf",
+    "quantization": "q5_k_m",
+    "tokenizer": "pcuenq/Llama-3.2-1B-Instruct-tokenizer",
+    "max_context_len": 8192,
+    "prefill_chunk": 8192,
+    "tags": [
+      "llama-3.2-1b",
+      "llama_cpp:r36",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ]
+  },
+  "llama-3.2-1b-instruct-q6-gguf": {
+    "name": "bartowski/Llama-3.2-1B-Instruct-GGUF",
+    "title": "Llama-3.2-1B \u276f llama.cpp Q6_K \u276f JetPack 6.1+",
+    "url": "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF/Llama-3.2-1B-Instruct-Q6_K.gguf",
+    "quantization": "q6_k",
+    "tokenizer": "pcuenq/Llama-3.2-1B-Instruct-tokenizer",
+    "max_context_len": 8192,
+    "prefill_chunk": 8192,
+    "tags": [
+      "llama-3.2-1b",
+      "llama_cpp:r36",
+      "agx-orin",
+      "orin-nx",
+      "orin-nano"
+    ]
   },
   "llama-3": {
     "name": "Meta Llama",
